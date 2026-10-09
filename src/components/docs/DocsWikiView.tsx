@@ -32,7 +32,8 @@ import {
   Layers,
   FileCode,
   Link as LinkIcon,
-  RemoveFormatting
+  RemoveFormatting,
+  Highlighter
 } from 'lucide-react';
 import { Document } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
@@ -57,6 +58,7 @@ interface ActiveFormatState {
   isH3: boolean;
   isQuote: boolean;
   isCode: boolean;
+  isHighlight: boolean;
   isUl: boolean;
   isOl: boolean;
 }
@@ -98,6 +100,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
     isH3: false,
     isQuote: false,
     isCode: false,
+    isHighlight: false,
     isUl: false,
     isOl: false,
   });
@@ -119,14 +122,14 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       /(^|\n)(#{1,6}\s|>|\d+\.\s|[-*]\s|```|---)/m.test(input) ||
       /(\*\*[^*]+\*\*|\*[^*]+\*|__[^_]+__|~~[^~]+~~|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\))/.test(input);
 
-    if (!hasRawMarkdownSyntax && /<(p|h[1-6]|ul|ol|li|blockquote|div|pre|code|table)[^>]*>/i.test(input)) {
+    if (!hasRawMarkdownSyntax && /<(p|h[1-6]|ul|ol|li|blockquote|div|pre|code|table|span|mark|strong|em|u|del)[^>]*>/i.test(input)) {
       return input;
     }
 
-    // Step 1: Normalize line breaks
+    // Normalize line breaks
     let raw = input.replace(/\r\n/g, '\n');
 
-    // Step 2: Inline formatter
+    // Inline formatter
     const inlineFormat = (text: string): string => {
       let formatted = text;
       // Bold + Italic (***text*** or ___text___)
@@ -146,7 +149,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       return formatted;
     };
 
-    // Step 3: Handle multiline block structures
+    // Handle multiline block structures
     const lines = raw.split('\n');
     const htmlLines: string[] = [];
     let inList: 'ul' | 'ol' | null = null;
@@ -244,7 +247,6 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       if (!line.trim()) {
         htmlLines.push('<p><br></p>');
       } else {
-        // Check if line already has HTML tags or is plain paragraph text
         if (/<(p|h[1-6]|blockquote|pre|div)[^>]*>/i.test(line)) {
           htmlLines.push(inlineFormat(line));
         } else {
@@ -272,6 +274,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
     md = md.replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*');
     md = md.replace(/<del[^>]*>(.*?)<\/del>/gi, '~~$1~~');
     md = md.replace(/<s[^>]*>(.*?)<\/s>/gi, '~~$1~~');
+    md = md.replace(/<mark[^>]*>(.*?)<\/mark>/gi, '==$1==');
     md = md.replace(/<code[^>]*>(.*?)<\/code>/gi, '`$1`');
     md = md.replace(/<blockquote[^>]*>(.*?)<\/blockquote>/gi, '> $1\n\n');
     md = md.replace(/<li[^>]*>(.*?)<\/li>/gi, '- $1\n');
@@ -305,6 +308,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       let isH3 = false;
       let isQuote = false;
       let isCode = false;
+      let isHighlight = false;
 
       const sel = window.getSelection();
       if (sel && sel.rangeCount > 0) {
@@ -313,11 +317,12 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
           if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node as HTMLElement;
             const tag = el.tagName.toLowerCase();
-            if (tag === 'h1') isH1 = true;
-            if (tag === 'h2') isH2 = true;
-            if (tag === 'h3') isH3 = true;
+            if (tag === 'h1' || el.classList.contains(styles.inlineH1)) isH1 = true;
+            if (tag === 'h2' || el.classList.contains(styles.inlineH2)) isH2 = true;
+            if (tag === 'h3' || el.classList.contains(styles.inlineH3)) isH3 = true;
             if (tag === 'blockquote') isQuote = true;
             if (tag === 'code' || tag === 'pre') isCode = true;
+            if (tag === 'mark') isHighlight = true;
           }
           node = node.parentNode;
         }
@@ -333,6 +338,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
         isH3,
         isQuote,
         isCode,
+        isHighlight,
         isUl,
         isOl,
       });
@@ -540,51 +546,183 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
     showToast('Copied markdown to clipboard');
   };
 
-  // High-Precision Rich Formatting Executor with Selection Preservation
+  // Inline Formatting Helper strictly for Selected Text
+  const applyInlineFormatting = (
+    tag: string,
+    styleAttrs?: Record<string, string>,
+    className?: string
+  ) => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+
+    if (range.collapsed) {
+      editorRef.current?.focus();
+      return;
+    }
+
+    // Check if selected text is already wrapped in this element
+    let parentEl: HTMLElement | null = range.commonAncestorContainer as HTMLElement;
+    if (parentEl.nodeType === Node.TEXT_NODE) {
+      parentEl = parentEl.parentElement;
+    }
+
+    const isMatchingTag =
+      parentEl &&
+      (parentEl.tagName.toLowerCase() === tag.toLowerCase() ||
+        (className && parentEl.classList.contains(className)));
+
+    if (isMatchingTag && parentEl && parentEl !== editorRef.current) {
+      // Toggle off / unwrap
+      const textNode = document.createTextNode(parentEl.textContent || '');
+      parentEl.parentNode?.replaceChild(textNode, parentEl);
+    } else {
+      // Wrap ONLY the highlighted selected text
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (styleAttrs) {
+        Object.entries(styleAttrs).forEach(([k, v]) => {
+          el.style.setProperty(k, v);
+        });
+      }
+
+      try {
+        const fragment = range.extractContents();
+        el.appendChild(fragment);
+        range.insertNode(el);
+
+        // Keep selection highlighted on formatted text
+        sel.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.selectNode(el);
+        sel.addRange(newRange);
+      } catch (err) {
+        console.warn('Inline formatting fallback:', err);
+      }
+    }
+
+    handleEditorInput();
+  };
+
+  // High-Precision Rich Formatting Executor (Works on Selected Text)
   const executeFormat = (command: string, value: string = '') => {
     if (!editorRef.current) return;
     editorRef.current.focus();
 
-    if (command === 'formatBlock') {
-      // Toggle block formatting (if already that heading/block, toggle back to normal paragraph)
-      const currentBlock = document.queryCommandValue('formatBlock')?.toLowerCase();
-      const targetTag = value.toLowerCase().replace(/[<>]/g, '');
+    const sel = window.getSelection();
+    const hasSelection = sel && sel.rangeCount > 0 && !sel.isCollapsed && sel.toString().length > 0;
 
-      if (currentBlock === targetTag) {
-        try {
-          document.execCommand('formatBlock', false, '<p>');
-        } catch {
-          document.execCommand('formatBlock', false, 'p');
+    if (hasSelection) {
+      const range = sel.getRangeAt(0);
+
+      // 1. Heading Formatting on Selected Text (Styles only selected text)
+      if (command === 'formatBlock' || command === 'heading') {
+        const tag = value.toLowerCase().replace(/[<>]/g, '');
+        if (tag === 'h1') {
+          applyInlineFormatting('span', {
+            'font-size': '1.75rem',
+            'font-weight': '800',
+            'letter-spacing': '-0.025em',
+            'line-height': '1.3',
+            'display': 'inline',
+          });
+          return;
+        } else if (tag === 'h2') {
+          applyInlineFormatting('span', {
+            'font-size': '1.3125rem',
+            'font-weight': '700',
+            'letter-spacing': '-0.02em',
+            'line-height': '1.35',
+            'display': 'inline',
+          });
+          return;
+        } else if (tag === 'h3') {
+          applyInlineFormatting('span', {
+            'font-size': '1.0625rem',
+            'font-weight': '700',
+            'letter-spacing': '-0.01em',
+            'line-height': '1.4',
+            'display': 'inline',
+          });
+          return;
+        } else if (tag === 'blockquote') {
+          applyInlineFormatting('span', {
+            'border-left': '3px solid var(--accent-magenta, #0284c7)',
+            'padding': '0.125rem 0.5rem',
+            'margin': '0 0.25rem',
+            'background': 'var(--bg-secondary)',
+            'font-style': 'italic',
+            'border-radius': '0.25rem',
+            'display': 'inline-block',
+          });
+          return;
+        } else if (tag === 'pre') {
+          applyInlineFormatting('code');
+          return;
         }
-      } else {
-        try {
-          document.execCommand('formatBlock', false, `<${targetTag}>`);
-        } catch {
-          document.execCommand('formatBlock', false, targetTag);
+      }
+
+      // 2. Inline Style Commands on Selected Text
+      if (command === 'bold') {
+        applyInlineFormatting('strong');
+        return;
+      }
+      if (command === 'italic') {
+        applyInlineFormatting('em');
+        return;
+      }
+      if (command === 'underline') {
+        applyInlineFormatting('u');
+        return;
+      }
+      if (command === 'strikeThrough') {
+        applyInlineFormatting('del');
+        return;
+      }
+      if (command === 'inlineCode') {
+        applyInlineFormatting('code');
+        return;
+      }
+      if (command === 'highlight') {
+        applyInlineFormatting('mark');
+        return;
+      }
+      if (command === 'createLink') {
+        const url = prompt('Enter link URL (e.g. https://example.com):');
+        if (url && url.trim()) {
+          const linkEl = document.createElement('a');
+          linkEl.href = url.trim();
+          linkEl.target = '_blank';
+          linkEl.rel = 'noopener noreferrer';
+          try {
+            const fragment = range.extractContents();
+            linkEl.appendChild(fragment);
+            range.insertNode(linkEl);
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNodeContents(linkEl);
+            sel.addRange(newRange);
+          } catch {
+            document.execCommand('createLink', false, url.trim());
+          }
+          handleEditorInput();
         }
+        return;
+      }
+    }
+
+    // 3. Block-level or Native Fallback when no text is selected (Cursor collapsed)
+    if (command === 'formatBlock') {
+      const targetTag = value.toLowerCase().replace(/[<>]/g, '');
+      try {
+        document.execCommand('formatBlock', false, `<${targetTag}>`);
+      } catch {
+        document.execCommand('formatBlock', false, targetTag);
       }
     } else if (command === 'inlineCode') {
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-        const range = sel.getRangeAt(0);
-        const selectedText = range.toString();
-        
-        // Check if inside a code element
-        let parentEl: HTMLElement | null = range.commonAncestorContainer as HTMLElement;
-        if (parentEl.nodeType === Node.TEXT_NODE) parentEl = parentEl.parentElement;
-        
-        if (parentEl && parentEl.tagName.toLowerCase() === 'code') {
-          // Unwrap code
-          const textNode = document.createTextNode(selectedText);
-          parentEl.parentNode?.replaceChild(textNode, parentEl);
-        } else {
-          // Wrap in code
-          const codeEl = document.createElement('code');
-          codeEl.textContent = selectedText;
-          range.deleteContents();
-          range.insertNode(codeEl);
-        }
-      }
+      document.execCommand('insertHTML', false, '<code> </code>');
+    } else if (command === 'highlight') {
+      document.execCommand('insertHTML', false, '<mark>highlighted</mark>');
     } else if (command === 'createLink') {
       const url = prompt('Enter link URL (e.g. https://example.com):');
       if (url && url.trim()) {
@@ -885,7 +1023,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('formatBlock', 'h1'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isH1 ? styles.toolbarBtnActive : ''}`}
-                  title="Heading 1"
+                  title="Heading 1 (Styles Selected Text)"
                 >
                   <Heading1 className="w-3.5 h-3.5" />
                 </button>
@@ -893,7 +1031,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('formatBlock', 'h2'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isH2 ? styles.toolbarBtnActive : ''}`}
-                  title="Heading 2"
+                  title="Heading 2 (Styles Selected Text)"
                 >
                   <Heading2 className="w-3.5 h-3.5" />
                 </button>
@@ -901,7 +1039,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('formatBlock', 'h3'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isH3 ? styles.toolbarBtnActive : ''}`}
-                  title="Heading 3"
+                  title="Heading 3 (Styles Selected Text)"
                 >
                   <Heading3 className="w-3.5 h-3.5" />
                 </button>
@@ -913,7 +1051,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('bold'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isBold ? styles.toolbarBtnActive : ''}`}
-                  title="Bold (⌘B)"
+                  title="Bold (⌘B) - Selected Text"
                 >
                   <Bold className="w-3.5 h-3.5" />
                 </button>
@@ -921,7 +1059,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('italic'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isItalic ? styles.toolbarBtnActive : ''}`}
-                  title="Italic (⌘I)"
+                  title="Italic (⌘I) - Selected Text"
                 >
                   <Italic className="w-3.5 h-3.5" />
                 </button>
@@ -929,7 +1067,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('underline'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isUnderline ? styles.toolbarBtnActive : ''}`}
-                  title="Underline (⌘U)"
+                  title="Underline (⌘U) - Selected Text"
                 >
                   <Underline className="w-3.5 h-3.5" />
                 </button>
@@ -937,9 +1075,17 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('strikeThrough'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isStrike ? styles.toolbarBtnActive : ''}`}
-                  title="Strikethrough"
+                  title="Strikethrough - Selected Text"
                 >
                   <Strikethrough className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onMouseDown={(e) => { e.preventDefault(); executeFormat('highlight'); }}
+                  className={`${styles.toolbarBtn} ${activeFormats.isHighlight ? styles.toolbarBtnActive : ''}`}
+                  title="Highlight Marker - Selected Text"
+                >
+                  <Highlighter className="w-3.5 h-3.5" />
                 </button>
 
                 <div className={styles.toolbarDivider} />
@@ -957,7 +1103,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('inlineCode'); }}
                   className={`${styles.toolbarBtn} ${activeFormats.isCode ? styles.toolbarBtnActive : ''}`}
-                  title="Inline Code"
+                  title="Inline Code - Selected Text"
                 >
                   <Code className="w-3.5 h-3.5" />
                 </button>
@@ -1005,7 +1151,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('createLink'); }}
                   className={styles.toolbarBtn}
-                  title="Insert Link"
+                  title="Insert Link - Selected Text"
                 >
                   <LinkIcon className="w-3.5 h-3.5" />
                 </button>
@@ -1013,7 +1159,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   type="button"
                   onMouseDown={(e) => { e.preventDefault(); executeFormat('removeFormat'); }}
                   className={styles.toolbarBtn}
-                  title="Clear Formatting"
+                  title="Clear Formatting on Selected Text"
                 >
                   <RemoveFormatting className="w-3.5 h-3.5" />
                 </button>

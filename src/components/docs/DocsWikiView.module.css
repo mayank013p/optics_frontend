@@ -607,6 +607,26 @@
   font-style: italic;
 }
 
+.liveDocEditor u, .previewContainer u {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.liveDocEditor del, .previewContainer del,
+.liveDocEditor s, .previewContainer s {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.liveDocEditor mark, .previewContainer mark {
+  background-color: var(--accent-amber-subtle, rgba(245, 158, 11, 0.2));
+  color: var(--text-main);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
 .liveDocEditor blockquote, .previewContainer blockquote {
   border-left: 3px solid var(--accent-magenta, #0284c7);
   margin: 0.875rem 0;
