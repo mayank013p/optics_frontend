@@ -19,7 +19,8 @@ import {
   CheckCircle2,
   SlidersHorizontal,
   Filter,
-  Columns
+  Columns,
+  UserCheck,
 } from 'lucide-react';
 import { Priority, Issue } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
@@ -40,11 +41,14 @@ export const KanbanBoard: React.FC = () => {
     activeProject,
     setIsCreateProjectOpen,
     can,
+    currentUser,
+    members,
   } = useOptics();
 
   const [draggingTaskId, setDraggingTaskId] = useState<string | null>(null);
   const [selectedPriority, setSelectedPriority] = useState<string>('ALL');
   const [selectedType, setSelectedType] = useState<string>('ALL');
+  const [selectedAssignee, setSelectedAssignee] = useState<string>('ALL');
   const [isAddColumnOpen, setIsAddColumnOpen] = useState(false);
   const [newColumnName, setNewColumnName] = useState('');
 
@@ -110,7 +114,17 @@ export const KanbanBoard: React.FC = () => {
       const filteredTasks = colTasks.filter((t) => {
         const matchesPriority = selectedPriority === 'ALL' || t.priority === selectedPriority;
         const matchesType = selectedType === 'ALL' || t.type === selectedType;
-        return matchesPriority && matchesType;
+
+        let matchesAssignee = true;
+        if (selectedAssignee === 'ME') {
+          matchesAssignee = Boolean(currentUser && t.assignees?.some((a) => a.user.id === currentUser.id));
+        } else if (selectedAssignee === 'UNASSIGNED') {
+          matchesAssignee = !t.assignees || t.assignees.length === 0;
+        } else if (selectedAssignee !== 'ALL') {
+          matchesAssignee = Boolean(t.assignees?.some((a) => a.user.id === selectedAssignee));
+        }
+
+        return matchesPriority && matchesType && matchesAssignee;
       });
       return {
         ...col,
@@ -118,7 +132,7 @@ export const KanbanBoard: React.FC = () => {
         issues: filteredTasks,
       };
     });
-  }, [filteredBoard, selectedPriority, selectedType]);
+  }, [filteredBoard, selectedPriority, selectedType, selectedAssignee, currentUser]);
 
   const totalPoints = useMemo(() => {
     if (!filteredBoard) return 0;
@@ -175,6 +189,50 @@ export const KanbanBoard: React.FC = () => {
 
         {/* Clean Segmented Filters */}
         <div className={styles.headerControls}>
+          {/* Assignee Filter Segment */}
+          <div className={styles.segmentedFilter}>
+            <button
+              type="button"
+              onClick={() => setSelectedAssignee('ALL')}
+              className={`${styles.filterBtn} ${selectedAssignee === 'ALL' ? styles.filterBtnActive : ''}`}
+            >
+              All
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedAssignee('ME')}
+              className={`${styles.filterBtn} ${selectedAssignee === 'ME' ? styles.filterBtnActive : ''}`}
+              title={currentUser ? `Only show tasks assigned to ${currentUser.name}` : 'Assigned to Me'}
+            >
+              <UserCheck className="w-3 h-3" />
+              <span>Assigned to Me</span>
+            </button>
+            {members && members.length > 0 && (
+              <select
+                value={['ALL', 'ME'].includes(selectedAssignee) ? '' : selectedAssignee}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setSelectedAssignee(e.target.value);
+                  }
+                }}
+                className={`${styles.assigneeSelect} ${!['ALL', 'ME'].includes(selectedAssignee) ? styles.assigneeSelectActive : ''}`}
+                title="Filter by specific team member or unassigned"
+              >
+                <option value="">
+                  {!['ALL', 'ME'].includes(selectedAssignee)
+                    ? `👤 ${members.find((m) => m.user.id === selectedAssignee)?.user.name || (selectedAssignee === 'UNASSIGNED' ? 'Unassigned' : 'Member')}`
+                    : 'Team Member ▾'}
+                </option>
+                <option value="UNASSIGNED">Unassigned Tasks</option>
+                {members.map((m) => (
+                  <option key={m.user.id} value={m.user.id}>
+                    {m.user.name} ({m.role || 'Member'})
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+
           <div className={styles.segmentedFilter}>
             {['ALL', 'URGENT', 'HIGH', 'MEDIUM'].map((p) => (
               <button

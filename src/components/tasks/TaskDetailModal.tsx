@@ -40,6 +40,7 @@ export const TaskDetailModal: React.FC = () => {
     handleUpdateSubtasks,
     handleDeleteTask,
     handleAddComment: addCommentToBackend,
+    addNotification,
     members,
     currentUser,
     can,
@@ -213,6 +214,14 @@ export const TaskDetailModal: React.FC = () => {
       nextAssignees = currentAssignees.filter((a) => a.user.id !== user.id);
     } else {
       nextAssignees = [...currentAssignees, { user }];
+      // Send notification when assigned
+      addNotification({
+        title: `Task Assigned: ${selectedTask.key}`,
+        message: `${currentUser?.name || 'Someone'} assigned ${user.name} to ${selectedTask.key}: "${selectedTask.title}"`,
+        type: 'assign',
+        taskId: selectedTask.id,
+        taskKey: selectedTask.key,
+      });
     }
     triggerUpdate({ assignees: nextAssignees });
   };
@@ -277,6 +286,35 @@ export const TaskDetailModal: React.FC = () => {
     setMentionDropdownOpen(false);
     try {
       await addCommentToBackend(selectedTask.id, trimmed);
+
+      // 1. Notify mentioned users
+      const lower = trimmed.toLowerCase();
+      const mentionedMembers = members.filter((m) =>
+        lower.includes(`@${m.user.name.toLowerCase()}`)
+      );
+      mentionedMembers.forEach((m) => {
+        addNotification({
+          title: `Mentioned in ${selectedTask.key}`,
+          message: `${currentUser?.name || 'Someone'} mentioned you in a comment on "${selectedTask.title}": "${trimmed.length > 70 ? trimmed.slice(0, 70) + '...' : trimmed}"`,
+          type: 'mention',
+          taskId: selectedTask.id,
+          taskKey: selectedTask.key,
+        });
+      });
+
+      // 2. Notify other task assignees of the new comment (if not already mentioned)
+      const assigneesToNotify = (selectedTask.assignees || []).filter(
+        (a) => a.user.id !== currentUser?.id && !mentionedMembers.some((m) => m.user.id === a.user.id)
+      );
+      assigneesToNotify.forEach((a) => {
+        addNotification({
+          title: `New Comment on ${selectedTask.key}`,
+          message: `${currentUser?.name || 'Someone'} commented on "${selectedTask.title}": "${trimmed.length > 70 ? trimmed.slice(0, 70) + '...' : trimmed}"`,
+          type: 'mention',
+          taskId: selectedTask.id,
+          taskKey: selectedTask.key,
+        });
+      });
     } finally {
       setIsSubmittingComment(false);
     }
@@ -647,12 +685,7 @@ export const TaskDetailModal: React.FC = () => {
                   />
                   <button
                     type="submit"
-                    className="px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all"
-                    style={{
-                      backgroundColor: 'var(--button-primary-bg)',
-                      color: 'var(--button-primary-text)',
-                      border: 'none',
-                    }}
+                    className={styles.subtaskAddBtn}
                   >
                     Add
                   </button>
@@ -690,16 +723,10 @@ export const TaskDetailModal: React.FC = () => {
                   {can('comment.create') && (
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer transition-all"
-                      style={{
-                        backgroundColor: 'var(--button-primary-bg)',
-                        color: 'var(--button-primary-text)',
-                        border: 'none',
-                        opacity: (isSubmittingComment || !newComment.trim()) ? 0.5 : 1,
-                      }}
+                      className={styles.commentSendBtn}
                       disabled={isSubmittingComment || !newComment.trim()}
                     >
-                      <Send className="w-3 h-3" />
+                      <Send className="w-3.5 h-3.5" />
                       <span>Send</span>
                     </button>
                   )}
