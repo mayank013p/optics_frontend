@@ -546,192 +546,157 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
     showToast('Copied markdown to clipboard');
   };
 
-  // Inline Formatting Helper strictly for Selected Text
-  const applyInlineFormatting = (
-    tag: string,
-    styleAttrs?: Record<string, string>,
-    className?: string
-  ) => {
-    const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) return;
-    const range = sel.getRangeAt(0);
-
-    if (range.collapsed) {
-      editorRef.current?.focus();
-      return;
-    }
-
-    // Check if selected text is already wrapped in this element
-    let parentEl: HTMLElement | null = range.commonAncestorContainer as HTMLElement;
-    if (parentEl.nodeType === Node.TEXT_NODE) {
-      parentEl = parentEl.parentElement;
-    }
-
-    const isMatchingTag =
-      parentEl &&
-      (parentEl.tagName.toLowerCase() === tag.toLowerCase() ||
-        (className && parentEl.classList.contains(className)));
-
-    if (isMatchingTag && parentEl && parentEl !== editorRef.current) {
-      // Toggle off / unwrap
-      const textNode = document.createTextNode(parentEl.textContent || '');
-      parentEl.parentNode?.replaceChild(textNode, parentEl);
-    } else {
-      // Wrap ONLY the highlighted selected text
-      const el = document.createElement(tag);
-      if (className) el.className = className;
-      if (styleAttrs) {
-        Object.entries(styleAttrs).forEach(([k, v]) => {
-          el.style.setProperty(k, v);
-        });
+  // Helper to find ancestor within editor canvas
+  const findAncestor = (node: Node | null, predicate: (el: HTMLElement) => boolean): HTMLElement | null => {
+    let curr = node;
+    while (curr && curr !== editorRef.current) {
+      if (curr.nodeType === Node.ELEMENT_NODE && predicate(curr as HTMLElement)) {
+        return curr as HTMLElement;
       }
-
-      try {
-        const fragment = range.extractContents();
-        el.appendChild(fragment);
-        range.insertNode(el);
-
-        // Keep selection highlighted on formatted text
-        sel.removeAllRanges();
-        const newRange = document.createRange();
-        newRange.selectNode(el);
-        sel.addRange(newRange);
-      } catch (err) {
-        console.warn('Inline formatting fallback:', err);
-      }
+      curr = curr.parentNode;
     }
-
-    handleEditorInput();
+    return null;
   };
 
-  // High-Precision Rich Formatting Executor (Works on Selected Text)
+  // High-Precision Rich Formatting Executor (Toggle ON / Toggle OFF)
   const executeFormat = (command: string, value: string = '') => {
     if (!editorRef.current) return;
     editorRef.current.focus();
 
+    try {
+      document.execCommand('styleWithCSS', false, 'false');
+    } catch {}
+
     const sel = window.getSelection();
-    const hasSelection = sel && sel.rangeCount > 0 && !sel.isCollapsed && sel.toString().length > 0;
 
-    if (hasSelection) {
-      const range = sel.getRangeAt(0);
+    // 1. Headings (H1, H2, H3) & Blockquote & Code Block Toggle
+    if (command === 'formatBlock' || command === 'heading') {
+      const targetTag = value.toLowerCase().replace(/[<>]/g, '');
+      const currentBlock = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) =>
+        ['h1', 'h2', 'h3', 'blockquote', 'pre'].includes(el.tagName.toLowerCase())
+      ) : null;
 
-      // 1. Heading Formatting on Selected Text (Styles only selected text)
-      if (command === 'formatBlock' || command === 'heading') {
-        const tag = value.toLowerCase().replace(/[<>]/g, '');
-        if (tag === 'h1') {
-          applyInlineFormatting('span', {
-            'font-size': '1.75rem',
-            'font-weight': '800',
-            'letter-spacing': '-0.025em',
-            'line-height': '1.3',
-            'display': 'inline',
-          });
-          return;
-        } else if (tag === 'h2') {
-          applyInlineFormatting('span', {
-            'font-size': '1.3125rem',
-            'font-weight': '700',
-            'letter-spacing': '-0.02em',
-            'line-height': '1.35',
-            'display': 'inline',
-          });
-          return;
-        } else if (tag === 'h3') {
-          applyInlineFormatting('span', {
-            'font-size': '1.0625rem',
-            'font-weight': '700',
-            'letter-spacing': '-0.01em',
-            'line-height': '1.4',
-            'display': 'inline',
-          });
-          return;
-        } else if (tag === 'blockquote') {
-          applyInlineFormatting('span', {
-            'border-left': '3px solid var(--accent-magenta, #0284c7)',
-            'padding': '0.125rem 0.5rem',
-            'margin': '0 0.25rem',
-            'background': 'var(--bg-secondary)',
-            'font-style': 'italic',
-            'border-radius': '0.25rem',
-            'display': 'inline-block',
-          });
-          return;
-        } else if (tag === 'pre') {
-          applyInlineFormatting('code');
-          return;
+      const currentTagName = currentBlock ? currentBlock.tagName.toLowerCase() : '';
+
+      if (currentTagName === targetTag) {
+        // Toggle OFF: convert back to standard paragraph
+        try {
+          document.execCommand('formatBlock', false, '<p>');
+        } catch {
+          document.execCommand('formatBlock', false, 'p');
+        }
+      } else {
+        // Toggle ON or switch to requested heading
+        try {
+          document.execCommand('formatBlock', false, `<${targetTag}>`);
+        } catch {
+          document.execCommand('formatBlock', false, targetTag);
         }
       }
+      handleEditorInput();
+      return;
+    }
 
-      // 2. Inline Style Commands on Selected Text
-      if (command === 'bold') {
-        applyInlineFormatting('strong');
-        return;
+    // 2. Inline Code Toggle
+    if (command === 'inlineCode') {
+      if (!sel || sel.rangeCount === 0) return;
+      const codeAncestor = findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'code');
+      
+      if (codeAncestor) {
+        // Toggle OFF: unwrap <code>
+        const parent = codeAncestor.parentNode;
+        while (codeAncestor.firstChild) {
+          parent?.insertBefore(codeAncestor.firstChild, codeAncestor);
+        }
+        parent?.removeChild(codeAncestor);
+      } else if (!sel.isCollapsed) {
+        // Toggle ON: wrap selected range in <code>
+        const range = sel.getRangeAt(0);
+        const codeEl = document.createElement('code');
+        try {
+          const fragment = range.extractContents();
+          codeEl.appendChild(fragment);
+          range.insertNode(codeEl);
+          sel.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(codeEl);
+          sel.addRange(newRange);
+        } catch {
+          document.execCommand('insertHTML', false, `<code>${range.toString()}</code>`);
+        }
       }
-      if (command === 'italic') {
-        applyInlineFormatting('em');
-        return;
+      handleEditorInput();
+      return;
+    }
+
+    // 3. Highlight (<mark>) Toggle
+    if (command === 'highlight') {
+      if (!sel || sel.rangeCount === 0) return;
+      const markAncestor = findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'mark');
+
+      if (markAncestor) {
+        // Toggle OFF: unwrap <mark>
+        const parent = markAncestor.parentNode;
+        while (markAncestor.firstChild) {
+          parent?.insertBefore(markAncestor.firstChild, markAncestor);
+        }
+        parent?.removeChild(markAncestor);
+      } else if (!sel.isCollapsed) {
+        // Toggle ON: wrap selected range in <mark>
+        const range = sel.getRangeAt(0);
+        const markEl = document.createElement('mark');
+        try {
+          const fragment = range.extractContents();
+          markEl.appendChild(fragment);
+          range.insertNode(markEl);
+          sel.removeAllRanges();
+          const newRange = document.createRange();
+          newRange.selectNodeContents(markEl);
+          sel.addRange(newRange);
+        } catch {
+          document.execCommand('insertHTML', false, `<mark>${range.toString()}</mark>`);
+        }
       }
-      if (command === 'underline') {
-        applyInlineFormatting('u');
-        return;
-      }
-      if (command === 'strikeThrough') {
-        applyInlineFormatting('del');
-        return;
-      }
-      if (command === 'inlineCode') {
-        applyInlineFormatting('code');
-        return;
-      }
-      if (command === 'highlight') {
-        applyInlineFormatting('mark');
-        return;
-      }
-      if (command === 'createLink') {
+      handleEditorInput();
+      return;
+    }
+
+    // 4. Link Insert / Remove
+    if (command === 'createLink') {
+      const linkAncestor = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'a') : null;
+      if (linkAncestor) {
+        // Toggle OFF: remove link
+        document.execCommand('unlink', false, undefined);
+      } else {
         const url = prompt('Enter link URL (e.g. https://example.com):');
         if (url && url.trim()) {
-          const linkEl = document.createElement('a');
-          linkEl.href = url.trim();
-          linkEl.target = '_blank';
-          linkEl.rel = 'noopener noreferrer';
-          try {
-            const fragment = range.extractContents();
-            linkEl.appendChild(fragment);
-            range.insertNode(linkEl);
-            sel.removeAllRanges();
-            const newRange = document.createRange();
-            newRange.selectNodeContents(linkEl);
-            sel.addRange(newRange);
-          } catch {
-            document.execCommand('createLink', false, url.trim());
-          }
-          handleEditorInput();
+          document.execCommand('createLink', false, url.trim());
         }
-        return;
       }
+      handleEditorInput();
+      return;
     }
 
-    // 3. Block-level or Native Fallback when no text is selected (Cursor collapsed)
-    if (command === 'formatBlock') {
-      const targetTag = value.toLowerCase().replace(/[<>]/g, '');
-      try {
-        document.execCommand('formatBlock', false, `<${targetTag}>`);
-      } catch {
-        document.execCommand('formatBlock', false, targetTag);
+    // 5. Clear Formatting (Remove all formats from selected text)
+    if (command === 'removeFormat') {
+      document.execCommand('removeFormat', false, undefined);
+      if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+        const customEl = findAncestor(sel.anchorNode, (el) => ['code', 'mark', 'span'].includes(el.tagName.toLowerCase()));
+        if (customEl) {
+          const parent = customEl.parentNode;
+          while (customEl.firstChild) {
+            parent?.insertBefore(customEl.firstChild, customEl);
+          }
+          parent?.removeChild(customEl);
+        }
       }
-    } else if (command === 'inlineCode') {
-      document.execCommand('insertHTML', false, '<code> </code>');
-    } else if (command === 'highlight') {
-      document.execCommand('insertHTML', false, '<mark>highlighted</mark>');
-    } else if (command === 'createLink') {
-      const url = prompt('Enter link URL (e.g. https://example.com):');
-      if (url && url.trim()) {
-        document.execCommand('createLink', false, url.trim());
-      }
-    } else {
-      document.execCommand(command, false, value);
+      handleEditorInput();
+      return;
     }
 
+    // 6. Native Standard Inline Commands (Bold, Italic, Underline, Strikethrough, Lists, etc.)
+    // Standard browser execCommand handles toggle on and off natively with 100% precision
+    document.execCommand(command, false, value || undefined);
     handleEditorInput();
   };
 
