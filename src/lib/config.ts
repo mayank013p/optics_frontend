@@ -1,31 +1,28 @@
 /**
  * Optics Application Environment & Base Configuration
- * Centrally manages all client & backend URL endpoints with resilient normalization
+ * Centrally derives and normalizes all client, REST, and WebSocket endpoints
+ * from a single base backend URL environment variable (`NEXT_PUBLIC_API_URL`).
  */
 
-// Raw API URL provided by environment or default local dev port
-const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+// Single source of truth base URL from environment (e.g., https://optics-backend-5g7q.onrender.com or http://localhost:4000)
+const rawBaseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000').trim().replace(/\/+$/, '');
 
-// Normalized REST API base URL (always guarantees trailing /api without double slashes)
-const normalizedApiUrl = rawApiUrl.endsWith('/api')
-  ? rawApiUrl.replace(/\/+$/, '')
-  : `${rawApiUrl.replace(/\/+$/, '')}/api`;
+// Clean root server origin without trailing /api
+const serverOrigin = rawBaseUrl.endsWith('/api')
+  ? rawBaseUrl.slice(0, -4).replace(/\/+$/, '')
+  : rawBaseUrl;
 
-// Server root origin (e.g., http://localhost:4000)
-const serverOrigin =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  process.env.NEXT_PUBLIC_SOCKET_URL ||
-  normalizedApiUrl.replace(/\/api\/?$/, '') ||
-  'http://localhost:4000';
+// Standard REST API base URL (always ensures /api path)
+const apiBaseUrl = `${serverOrigin}/api`;
 
 export const ENV = {
   /**
-   * Base REST API URL (e.g., http://localhost:4000/api)
+   * Base REST API URL (e.g., https://optics-backend-5g7q.onrender.com/api)
    */
-  API_URL: normalizedApiUrl,
+  API_URL: apiBaseUrl,
 
   /**
-   * Root backend server URL (e.g., http://localhost:4000)
+   * Root backend server URL (e.g., https://optics-backend-5g7q.onrender.com)
    * Used for static uploads, direct server health checks, and SSE streams
    */
   BACKEND_URL: serverOrigin,
@@ -33,20 +30,21 @@ export const ENV = {
   /**
    * WebSocket server URL for real-time collaboration and sprint updates
    */
-  SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL || serverOrigin,
+  SOCKET_URL: serverOrigin,
 
   /**
-   * Public client application URL (e.g., http://localhost:3000)
+   * Public client application URL
    */
-  APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  APP_URL:
+    typeof window !== 'undefined'
+      ? window.location.origin
+      : 'http://localhost:3000',
 
   /**
    * Application Branding
    */
-  APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'Optics',
-  APP_DESCRIPTION:
-    process.env.NEXT_PUBLIC_APP_DESCRIPTION ||
-    'The project management workspace designed for speed, clarity, and focus.',
+  APP_NAME: 'Optics',
+  APP_DESCRIPTION: 'The project management workspace designed for speed, clarity, and focus.',
 
   /**
    * Runtime mode helpers
