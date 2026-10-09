@@ -317,9 +317,18 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
           if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node as HTMLElement;
             const tag = el.tagName.toLowerCase();
-            if (tag === 'h1' || el.classList.contains(styles.inlineH1)) isH1 = true;
-            if (tag === 'h2' || el.classList.contains(styles.inlineH2)) isH2 = true;
-            if (tag === 'h3' || el.classList.contains(styles.inlineH3)) isH3 = true;
+            if (tag === 'h1' || el.classList.contains(styles.inlineH1)) {
+              isH1 = true;
+              break;
+            }
+            if (tag === 'h2' || el.classList.contains(styles.inlineH2)) {
+              isH2 = true;
+              break;
+            }
+            if (tag === 'h3' || el.classList.contains(styles.inlineH3)) {
+              isH3 = true;
+              break;
+            }
             if (tag === 'blockquote') isQuote = true;
             if (tag === 'code' || tag === 'pre') isCode = true;
             if (tag === 'mark') isHighlight = true;
@@ -577,33 +586,43 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       if (sel && !sel.isCollapsed && sel.rangeCount > 0 && ['h1', 'h2', 'h3'].includes(targetTag)) {
         const targetClass = targetTag === 'h1' ? styles.inlineH1 : targetTag === 'h2' ? styles.inlineH2 : styles.inlineH3;
         
-        const existingSpan = findAncestor(sel.anchorNode, (el) =>
-          el.classList.contains(styles.inlineH1) ||
-          el.classList.contains(styles.inlineH2) ||
-          el.classList.contains(styles.inlineH3)
-        );
+        // Find if selection or its anchor/focus is inside an inline heading span
+        const existingSpan =
+          (sel.anchorNode ? findAncestor(sel.anchorNode, (el) =>
+            el.classList.contains(styles.inlineH1) ||
+            el.classList.contains(styles.inlineH2) ||
+            el.classList.contains(styles.inlineH3)
+          ) : null) ||
+          (sel.focusNode ? findAncestor(sel.focusNode, (el) =>
+            el.classList.contains(styles.inlineH1) ||
+            el.classList.contains(styles.inlineH2) ||
+            el.classList.contains(styles.inlineH3)
+          ) : null);
 
         if (existingSpan) {
           if (existingSpan.classList.contains(targetClass)) {
-            // Toggle OFF: unwrap span, keep text selected
+            // Toggle OFF: unwrap span, restore clean text node
             const parent = existingSpan.parentNode;
-            const textNode = document.createTextNode(existingSpan.textContent || '');
+            const text = existingSpan.textContent || '';
+            const textNode = document.createTextNode(text);
             parent?.replaceChild(textNode, existingSpan);
 
+            // Re-select inner text range cleanly
             sel.removeAllRanges();
             const newRange = document.createRange();
-            newRange.selectNode(textNode);
+            newRange.setStart(textNode, 0);
+            newRange.setEnd(textNode, text.length);
             sel.addRange(newRange);
           } else {
             // Switch heading style (e.g. from H2 to H1)
             existingSpan.className = targetClass;
             sel.removeAllRanges();
             const newRange = document.createRange();
-            newRange.selectNode(existingSpan);
+            newRange.selectNodeContents(existingSpan);
             sel.addRange(newRange);
           }
         } else {
-          // Toggle ON: wrap ONLY selected text in heading span and keep it selected
+          // Toggle ON: wrap ONLY selected text in heading span and select its text contents
           const range = sel.getRangeAt(0);
           const span = document.createElement('span');
           span.className = targetClass;
@@ -612,9 +631,10 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
             span.appendChild(fragment);
             range.insertNode(span);
 
+            // Select only the text inside the span
             sel.removeAllRanges();
             const newRange = document.createRange();
-            newRange.selectNode(span);
+            newRange.selectNodeContents(span);
             sel.addRange(newRange);
           } catch (err) {
             console.warn('Selected text heading fallback:', err);
