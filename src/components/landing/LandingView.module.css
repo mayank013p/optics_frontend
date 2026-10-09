@@ -1,0 +1,1858 @@
+/* Optics Promotional / Landing Page - Pure Studio Cream & Black Theme (Strictly Monochrome) */
+
+.landingWrapper {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #faf8f5;
+  color: #18181b;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 64px; /* Space for fixed navbar */
+}
+
+/* 1. Header & Navigation (Fixed top, product-focused links, creamy & black) */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 3rem;
+  background-color: rgba(250, 248, 245, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e7e2d8;
+  transition: all 0.15s ease;
+}
+
+.navBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #18181b;
+}
+
+.brandLogoMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+.brandName {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #18181b;
+  line-height: 1;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLinkItem {
+  display: flex;
+  align-items: center;
+}
+
+.navLink {
+  color: #57534e;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  cursor: pointer;
+}
+
+.navLink:hover {
+  color: #18181b;
+}
+
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loginBtn {
+  background: none;
+  border: none;
+  color: #18181b;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.375rem 0.625rem;
+  transition: opacity 0.15s ease;
+}
+
+.loginBtn:hover {
+  opacity: 0.75;
+}
+
+.getStartedBtn {
+  background-color: #18181b;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  padding: 0.4rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.getStartedBtn:hover {
+  background-color: #27272a;
+}
+
+.getStartedBtn:active {
+  transform: scale(0.98);
+}
+
+.openAppBtn {
+  background-color: #18181b;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  padding: 0.4rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background-color 0.15s ease;
+}
+
+.openAppBtn:hover {
+  background-color: #27272a;
+}
+
+/* 2. Hero Section (Divided into 2 columns with FolderFloat on right) */
+.heroSection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6rem;
+  min-height: calc(100vh - 64px);
+  min-height: calc(100dvh - 64px);
+  padding: 2.25rem 2rem 2.5rem;
+  max-width: 82rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Classic Architectural Dot Grid Texture with Radial Edge Fade */
+.heroSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(120, 113, 108, 0.18) 1.25px, transparent 1.25px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, black 25%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, black 25%, transparent 80%);
+  z-index: 0;
+}
+
+/* Soft Ambient Luminous Warm Glow Behind Canvas */
+.heroSection::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  right: 12%;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(246, 242, 234, 0.4) 55%, transparent 75%);
+  pointer-events: none;
+  filter: blur(50px);
+  z-index: 0;
+}
+
+.heroTwoColGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: 3.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.heroLeftCol {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.heroRightCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 19rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding-top: 1rem;
+  padding-bottom: 0.25rem;
+}
+
+.heroHeading {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  color: #18181b;
+  max-width: 36rem;
+  margin-bottom: 1rem;
+}
+
+.heroEmphasis {
+  color: #18181b;
+  position: relative;
+  display: inline-block;
+}
+
+.heroParagraph {
+  font-size: 1.125rem;
+  color: #57534e;
+  line-height: 1.6;
+  max-width: 44rem;
+  margin-bottom: 1.5rem;
+}
+
+.heroCtaGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.heroGradientText {
+  color: #18181b;
+}
+
+.btnPrimary {
+  background-color: #18181b;
+  color: #ffffff;
+  border: none;
+  border-radius: 9px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btnPrimary:hover {
+  background-color: #27272a;
+}
+
+.btnSecondary {
+  background-color: #ffffff;
+  color: #18181b;
+  border: 1px solid #dcd6cb;
+  border-radius: 9px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btnSecondary:hover {
+  background-color: #f7f5f0;
+  border-color: #c9c2b4;
+}
+
+.heroCtaPrimary {
+  background-color: #18181b;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.heroCtaPrimary:hover {
+  background-color: #27272a;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.14);
+}
+
+.heroCtaSecondary {
+  background-color: #ffffff;
+  color: #18181b;
+  border: 1px solid #dcd6cb;
+  border-radius: 10px;
+  padding: 0.55rem 1.15rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.heroCtaSecondary:hover {
+  background-color: #f7f5f0;
+  border-color: #c9c2b4;
+}
+
+/* 3. Hero Bottom Bar: Classic Frameless Teams Row in Single Line & Ivors Mark in Bottom-Left */
+.heroFooterRow {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(231, 226, 216, 0.75);
+  margin-top: 0;
+}
+
+/* Frameless, Classic Team Row in a Single Line (No boxed cards, no descriptions) */
+.heroTeamsClassicRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  width: 100%;
+  flex-wrap: nowrap;
+}
+
+.heroTeamClassicItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: default;
+  background: transparent;
+  border: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.heroTeamClassicIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #27272a;
+  flex-shrink: 0;
+}
+
+.heroTeamClassicTitle {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #18181b;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.heroTeamClassicSep {
+  color: #d6d3cd;
+  font-size: 0.875rem;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* Bottom Row inside heroFooterRow: Ivors Branding on bottom-left, Subtext on right */
+.heroFooterBottomRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* Ivors Studio Branding Signature (Bottom-Left Positioned, Classic & Architectural) */
+.ivorsClassicSignature {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-left: 0;
+  margin-right: auto;
+  text-align: left;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.ivorsBrandMark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.ivorsPrefix {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #78716c;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+}
+
+.ivorsBrandName {
+  font-size: 1.1875rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #18181b;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+}
+
+.heroTeamsSubtext {
+  font-size: 0.8125rem;
+  color: #78716c;
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* 4. Trust / Architecture Banner */
+.trustBanner {
+  border-top: 1px solid #e7e2d8;
+  border-bottom: 1px solid #e7e2d8;
+  background: #f4efe6;
+  padding: 2.75rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+}
+
+.trustLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #78716c;
+}
+
+.metricsGrid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3.5rem;
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.metricValue {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #18181b;
+  font-family: var(--font-mono, monospace);
+}
+
+.metricDesc {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #57534e;
+}
+
+/* 5. Bento Grid Features Section */
+.featuresSection {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 6.5rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.sectionKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #78716c;
+  margin-bottom: 0.25rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.kickerIndex {
+  color: #18181b;
+  font-family: var(--font-mono, monospace);
+  font-weight: 800;
+  font-size: 0.8125rem;
+}
+
+.kickerDivider {
+  color: #c4beb4;
+  font-weight: 400;
+}
+
+.kickerLabel {
+  color: #57534e;
+  font-weight: 700;
+}
+
+.sectionEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #78716c;
+  margin-bottom: 0.25rem;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.sectionTitle {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #18181b;
+  max-width: 42rem;
+}
+
+.sectionSubtitle {
+  font-size: 1.0625rem;
+  color: #57534e;
+  max-width: 36rem;
+  line-height: 1.6;
+}
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.bentoCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 22px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bentoCard:hover {
+  transform: translateY(-2px);
+  border-color: #18181b;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
+}
+
+.bentoSpan2 {
+  grid-column: span 2;
+}
+
+.bentoIconBadge {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 12px;
+  background: #f7f4ee;
+  border: 1px solid #e5ded2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #18181b;
+  margin-bottom: 0.75rem;
+}
+
+.bentoTitle {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #18181b;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.bentoDesc {
+  font-size: 0.875rem;
+  color: #57534e;
+  line-height: 1.6;
+}
+
+.bentoVisualContainer {
+  background: #f7f5f0;
+  border: 1px solid #eae5db;
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* 6. Comparison Section ("Why Optics") */
+.compareSection {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+}
+
+.compareTableWrapper {
+  width: 100%;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  overflow: hidden;
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.03);
+}
+
+.compareTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.compareTable th {
+  padding: 1.25rem 1.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #78716c;
+  border-bottom: 1px solid #e7e2d8;
+  background: #f7f4ee;
+}
+
+.compareTable th.opticsHeader {
+  color: #18181b;
+  background: #ede7db;
+  font-weight: 800;
+}
+
+.compareTable td {
+  padding: 1.125rem 1.5rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #e7e2d8;
+  color: #18181b;
+}
+
+.compareTable tr:last-child td {
+  border-bottom: none;
+}
+
+.checkPositive {
+  color: #18181b;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 700;
+}
+
+.crossNegative {
+  color: #a8a29e;
+  opacity: 0.8;
+}
+
+/* 7. Pricing Section */
+.pricingSection {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 6rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.billingToggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #57534e;
+}
+
+.toggleSwitch {
+  width: 3rem;
+  height: 1.625rem;
+  border-radius: 12px;
+  background: #e7e2d8;
+  border: 1px solid #d6cfc3;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.toggleSwitchActive {
+  background: #18181b;
+  border-color: #18181b;
+}
+
+.toggleThumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 8px;
+  background: #ffffff;
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.toggleThumbActive {
+  transform: translateX(1.375rem);
+}
+
+.discountBadge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 8px;
+  background: #f4efe6;
+  color: #18181b;
+  border: 1px solid #e0d9cc;
+}
+
+.pricingGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.pricingCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 22px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.pricingCardFeatured {
+  border-color: #18181b;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+.featuredPill {
+  position: absolute;
+  top: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #18181b;
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 8px;
+}
+
+.planTierName {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #18181b;
+}
+
+.planDesc {
+  font-size: 0.8125rem;
+  color: #57534e;
+  line-height: 1.5;
+}
+
+.planPrice {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.priceNumber {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: #18181b;
+  letter-spacing: -0.04em;
+}
+
+.pricePeriod {
+  font-size: 0.875rem;
+  color: #78716c;
+}
+
+.planFeatureList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+  border-top: 1px solid #e7e2d8;
+  padding-top: 1.25rem;
+  margin: 0;
+  flex: 1;
+}
+
+.planFeatureItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: #57534e;
+}
+
+.featureCheck {
+  color: #18181b;
+  flex-shrink: 0;
+}
+
+.planCtaBtn {
+  width: 100%;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid #dcd6cb;
+  background: #ffffff;
+  color: #18181b;
+  transition: all 0.15s ease;
+}
+
+.planCtaBtn:hover {
+  background: #18181b;
+  color: #ffffff;
+  border-color: #18181b;
+}
+
+.planCtaBtnFeatured {
+  background: #18181b;
+  color: #ffffff;
+  border: 1px solid #18181b;
+}
+
+.planCtaBtnFeatured:hover {
+  background: #27272a;
+}
+
+/* 8. FAQ Accordion Section */
+.faqSection {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.faqItem {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+}
+
+.faqQuestionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.faqQuestion {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.faqAnswer {
+  padding: 0 1.5rem 1.25rem;
+  font-size: 0.875rem;
+  color: #57534e;
+  line-height: 1.6;
+}
+
+/* 9. Bottom Big CTA Banner */
+.bottomCtaSection {
+  max-width: 68rem;
+  margin: 2rem auto 6rem;
+  padding: 0 1.5rem;
+}
+
+.ctaCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 24px;
+  padding: 4.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  box-shadow: 0 8px 30px -10px rgba(0, 0, 0, 0.05);
+}
+
+.ctaHeading {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #18181b;
+  max-width: 38rem;
+}
+
+.ctaParagraph {
+  font-size: 1.0625rem;
+  color: #57534e;
+  max-width: 32rem;
+  line-height: 1.6;
+}
+
+.ctaBtnsRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.ctaSubnote {
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+/* 10. Institutional Footer */
+.footer {
+  border-top: 1px solid #e7e2d8;
+  background: #f4efe6;
+  padding: 4.5rem 3rem 2.5rem;
+}
+
+.footerInner {
+  max-width: 78rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 3rem;
+}
+
+.footerBrandCol {
+  max-width: 20rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.footerTagline {
+  font-size: 0.8125rem;
+  color: #57534e;
+  line-height: 1.55;
+}
+
+.footerColumns {
+  display: flex;
+  gap: 4.5rem;
+  flex-wrap: wrap;
+}
+
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.footerColTitle {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #18181b;
+}
+
+.footerColLinks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 0;
+  margin: 0;
+}
+
+.footerColLink {
+  font-size: 0.8125rem;
+  color: #57534e;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerColLink:hover {
+  color: #18181b;
+}
+
+.footerBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e7e2d8;
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+/* ==========================================================================
+   05. Developer Toolchain & Reactive Pipeline Section
+   ========================================================================== */
+.toolchainSection {
+  padding: 6.5rem 1.5rem;
+  background-color: #faf8f5;
+  border-bottom: 1px solid #e7e2d8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.toolchainContainer {
+  max-width: 82rem;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.toolchainTwoColGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 1.75rem;
+}
+
+/* Command Palette Mockup */
+.cmdPaletteCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.cmdHeader {
+  background: #f4efe6;
+  border-bottom: 1px solid #e7e2d8;
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cmdDots {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.cmdDot {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background-color: #d6cfc3;
+}
+
+.cmdTitle {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #57534e;
+  letter-spacing: 0.05em;
+}
+
+.cmdBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.cmdInputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #faf8f5;
+  border: 1px solid #e7e2d8;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
+
+.cmdPrompt {
+  font-family: var(--font-mono, monospace);
+  color: #78716c;
+  font-weight: 700;
+}
+
+.cmdInputText {
+  flex: 1;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875rem;
+  color: #18181b;
+  font-weight: 500;
+}
+
+.cmdCursor {
+  display: inline-block;
+  width: 2px;
+  height: 1rem;
+  background: #18181b;
+  margin-left: 2px;
+  animation: blinkCursor 1s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blinkCursor {
+  from, to { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cmdEscHint {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  background: #ede7db;
+  color: #57534e;
+  padding: 0.1875rem 0.4375rem;
+  border-radius: 4px;
+}
+
+.cmdSectionLabel {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #a8a29e;
+  margin-top: 0.25rem;
+}
+
+.cmdList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cmdItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #f0ebe1;
+  transition: all 0.15s ease;
+}
+
+.cmdItem:hover {
+  background: #f7f4ee;
+  border-color: #e2dbcd;
+}
+
+.cmdItemActive {
+  background: #f4efe6;
+  border-color: #d6cfc3;
+}
+
+.cmdItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+  color: #18181b;
+  font-weight: 500;
+}
+
+.cmdKeyGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.cmdKey {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  background: #e7e2d8;
+  color: #18181b;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.08);
+}
+
+/* PR Sync & CI Card Mockup */
+.prSyncCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.prCardHeader {
+  padding: 1.25rem 1.5rem;
+  background: #f4efe6;
+  border-bottom: 1px solid #e7e2d8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.prRepoInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+  color: #57534e;
+}
+
+.prStatusMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+}
+
+.prStateLabel {
+  color: #78716c;
+}
+
+.prStateValue {
+  color: #18181b;
+  font-weight: 600;
+}
+
+.prCardBody {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.prTitleRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.prTitle {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.prBranchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+.prBranchName {
+  background: #f4efe6;
+  padding: 0.125rem 0.4375rem;
+  border-radius: 4px;
+  color: #18181b;
+  font-weight: 600;
+}
+
+.prCiChecksList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+}
+
+.prCheckBadge {
+  background: #faf8f5;
+  border: 1px solid #e7e2d8;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.prCheckBadgeName {
+  font-family: var(--font-mono, monospace);
+  color: #27272a;
+  font-weight: 600;
+}
+
+.prCheckBadgeDuration {
+  color: #78716c;
+  margin-left: auto;
+  font-size: 0.6875rem;
+}
+
+.prCodeSnippet {
+  background: #18181b;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: #e4e4e7;
+  overflow-x: auto;
+}
+
+.codeKeyword { color: #f43f5e; font-weight: 600; }
+.codeFunction { color: #38bdf8; }
+.codeParam { color: #fbbf24; }
+.codeString { color: #4ade80; }
+.codeComment { color: #71717a; font-style: italic; }
+
+/* Real-Time Reactive Architecture Strip */
+.pipelineCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.pipelineHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.pipelineTitle {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.pipelineBadge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #f4efe6;
+  color: #57534e;
+  padding: 0.25rem 0.625rem;
+  border-radius: 6px;
+  border: 1px solid #e7e2d8;
+}
+
+.pipelineFlowGrid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pipelineStepBox {
+  background: #faf8f5;
+  border: 1px solid #e7e2d8;
+  border-radius: 12px;
+  padding: 1rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pipelineStepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pipelineStepNum {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: #78716c;
+}
+
+.pipelineStepLatency {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #137333;
+}
+
+.pipelineStepName {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.pipelineStepDetail {
+  font-size: 0.75rem;
+  color: #78716c;
+  line-height: 1.4;
+}
+
+.pipelineArrow {
+  color: #a8a29e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pipelineMetricsBar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f0ebe1;
+}
+
+.pipelineMetricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.pipelineMetricVal {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: #18181b;
+}
+
+.pipelineMetricLbl {
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+/* ==========================================================================
+   06. Real-Time Velocity & Audit Telemetry Section
+   ========================================================================== */
+.analyticsSection {
+  padding: 6.5rem 1.5rem;
+  background-color: #f7f4ee;
+  border-bottom: 1px solid #e7e2d8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.analyticsContainer {
+  max-width: 82rem;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.analyticsCard {
+  background: #ffffff;
+  border: 1px solid #e7e2d8;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.analyticsCardHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.analyticsCardLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.analyticsCardTag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #78716c;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.analyticsMetaText {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #78716c;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.analyticsCardTitle {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.analyticsCardDesc {
+  font-size: 0.8125rem;
+  color: #57534e;
+  line-height: 1.5;
+}
+
+/* Burndown SVG Chart */
+.burndownSvgWrapper {
+  width: 100%;
+  height: 140px;
+  background: #faf8f5;
+  border: 1px solid #e7e2d8;
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-sizing: border-box;
+}
+
+.burndownStatsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0ebe1;
+}
+
+.burndownStatItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.burndownStatNum {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #18181b;
+}
+
+.burndownStatLbl {
+  font-size: 0.6875rem;
+  color: #78716c;
+}
+
+/* Cycle Time Bars */
+.cycleTimeHero {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+}
+
+.cycleTimeBigNum {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #18181b;
+  letter-spacing: -0.04em;
+}
+
+.cycleTimeMetricLabel {
+  font-size: 0.8125rem;
+  color: #78716c;
+  font-weight: 500;
+}
+
+.cycleSegmentBar {
+  display: flex;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+  gap: 2px;
+  background: #ede7db;
+}
+
+.cycleSegCoding { width: 29%; background: #18181b; }
+.cycleSegReview { width: 38%; background: #57534e; }
+.cycleSegBuild { width: 13%; background: #a8a29e; }
+.cycleSegDeploy { width: 20%; background: #c4beb4; }
+
+.cycleLegendGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.cycleLegendRow {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #57534e;
+}
+
+.cycleLegendColor {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.cycleSquadList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0ebe1;
+}
+
+.cycleSquadRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+.cycleSquadName {
+  font-weight: 600;
+  color: #27272a;
+}
+
+.cycleSquadVal {
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  color: #18181b;
+}
+
+/* Audit Log Stream */
+.auditLogList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.auditLogItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background: #faf8f5;
+  border: 1px solid #f0ebe1;
+  border-radius: 8px;
+}
+
+.auditActorInitials {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 6px;
+  background: #18181b;
+  color: #faf8f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.auditItemContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  flex: 1;
+}
+
+.auditItemTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.auditItemActor {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #18181b;
+}
+
+.auditItemTime {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  color: #a8a29e;
+}
+
+.auditItemDesc {
+  font-size: 0.75rem;
+  color: #57534e;
+  line-height: 1.35;
+}
+
+.auditItemBadge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.625rem;
+  font-weight: 700;
+  background: #ede7db;
+  color: #27272a;
+  padding: 0.0625rem 0.3125rem;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 0.375rem;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .heroTwoColGrid { grid-template-columns: 1fr; gap: 3rem; }
+  .heroLeftCol { align-items: center; text-align: center; }
+  .heroHeading { font-size: 3rem; }
+  .bentoGrid { grid-template-columns: 1fr; }
+  .bentoSpan2 { grid-column: span 1; }
+  .pricingGrid { grid-template-columns: 1fr; max-width: 26rem; margin: 0 auto; }
+  .boardGrid { grid-template-columns: repeat(2, 1fr); }
+  .navbar { padding: 0 1.5rem; }
+  .navLinks { display: none; }
+  .rbacGridHeader, .rbacGridRow { grid-template-columns: 1.8fr 1fr 1fr 1fr; }
+  .heroTeamsClassicRow { gap: 1rem; }
+  .toolchainTwoColGrid { grid-template-columns: 1fr; }
+  .pipelineFlowGrid { grid-template-columns: 1fr; gap: 1rem; }
+  .pipelineArrow { transform: rotate(90deg); margin: 0.25rem 0; }
+  .pipelineMetricsBar { grid-template-columns: repeat(2, 1fr); }
+  .analyticsGrid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .heroHeading { font-size: 2.25rem; }
+  .heroParagraph { font-size: 1rem; }
+  .heroCtaGroup { flex-direction: column; width: 100%; }
+  .heroCtaPrimary, .heroCtaSecondary { width: 100%; justify-content: center; }
+  .boardGrid { grid-template-columns: 1fr; }
+  .metricsGrid { gap: 2rem; }
+  .ctaCard { padding: 3rem 1.5rem; }
+  .ctaHeading { font-size: 2rem; }
+  .footerColumns { gap: 2.5rem; }
+  .heroTeamsClassicRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.625rem;
+  }
+  .heroTeamClassicSep {
+    display: none;
+  }
+  .heroFooterRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  .ivorsClassicSignature {
+    margin-left: 0;
+  }
+  .pipelineMetricsBar { grid-template-columns: 1fr; }
+  .prCiChecksList { grid-template-columns: 1fr; }
+}
+

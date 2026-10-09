@@ -1,0 +1,455 @@
+/* MagicBento.css - Optics Cream & Architectural Theme */
+
+:root {
+  --bento-bg: #ffffff;
+  --bento-border: #e7e2d8;
+  --bento-border-hover: #18181b;
+  --bento-text: #18181b;
+  --bento-subtext: #57534e;
+  --bento-label: #78716c;
+}
+
+.card-grid {
+  display: grid;
+  gap: 1.25rem;
+  padding: 0;
+  max-width: 82rem;
+  margin: 0 auto;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.magic-bento-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  min-height: 240px;
+  width: 100%;
+  max-width: 100%;
+  padding: 1.5rem;
+  border-radius: 18px;
+  border: 1px solid var(--bento-border);
+  background: var(--bento-bg);
+  overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-sizing: border-box;
+
+  --glow-x: 50%;
+  --glow-y: 50%;
+  --glow-intensity: 0;
+  --glow-radius: 220px;
+}
+
+.magic-bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -12px rgba(24, 24, 27, 0.09), 0 0 0 1px #dcd6cb;
+}
+
+.magic-bento-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 1rem;
+}
+
+.magic-bento-card__labelGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.magic-bento-card__iconBadge {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f4efe6;
+  border: 1px solid #e7e2d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #18181b;
+}
+
+.magic-bento-card__label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bento-label);
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+}
+
+/* Rich Visual Content Widget Inside Each Card */
+.magic-bento-card__bodyWidget {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0.5rem 0 1.25rem;
+  width: 100%;
+}
+
+.magic-bento-card__content {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+}
+
+.magic-bento-card__title {
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.25;
+  margin: 0 0 0.35rem;
+  color: var(--bento-text);
+  letter-spacing: -0.01em;
+}
+
+.magic-bento-card__description {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--bento-subtext);
+  margin: 0;
+}
+
+/* Specific Content Widgets Styling */
+
+/* 1. Progress Bar Widget */
+.widgetProgressBox {
+  background: #faf8f5;
+  border: 1px solid #ede7db;
+  border-radius: 10px;
+  padding: 0.75rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.widgetProgressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #78716c;
+}
+
+.widgetProgressHeader strong {
+  color: #18181b;
+  font-weight: 700;
+}
+
+.widgetProgressBarTrack {
+  width: 100%;
+  height: 6px;
+  background: #e7e2d8;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.widgetProgressBarFill {
+  height: 100%;
+  background: #18181b;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* 2. RBAC Permissions Widget */
+.widgetRbacBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.widgetRbacRolePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #ede7db;
+  border: 1px solid #dfd8cb;
+  color: #18181b;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.widgetRbacRuleList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #44403c;
+  background: #faf8f5;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ede7db;
+}
+
+.widgetRbacRule {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* 3. Large Card: Wiki & Specs Widget */
+.widgetDocBox {
+  background: #faf8f5;
+  border: 1px solid #ede7db;
+  border-radius: 12px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.widgetDocHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ede7db;
+  padding-bottom: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: #18181b;
+  font-weight: 600;
+}
+
+.widgetDocChecklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.78125rem;
+  color: #3f3f46;
+}
+
+.widgetDocCheckItem {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.widgetDocCode {
+  background: #18181b;
+  color: #f4efe6;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  overflow-x: auto;
+}
+
+/* 4. Large Card: Multi-Tenant Workspaces Widget */
+.widgetWorkspaceList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.widgetWorkspaceItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #faf8f5;
+  border: 1px solid #ede7db;
+  border-radius: 9px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.78125rem;
+  color: #18181b;
+  font-weight: 600;
+}
+
+.widgetWorkspaceSub {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: #78716c;
+}
+
+.widgetWorkspaceBadge {
+  font-size: 0.6875rem;
+  background: #ffffff;
+  border: 1px solid #dcd6cb;
+  padding: 0.15rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #44403c;
+}
+
+/* 5. Teamwork Avatars Widget */
+.widgetAvatarsBox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.widgetAvatarStack {
+  display: flex;
+  align-items: center;
+}
+
+.widgetAvatarCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #18181b;
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  margin-left: -8px;
+}
+
+.widgetAvatarCircle:first-child {
+  margin-left: 0;
+}
+
+.widgetMemberCount {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  color: #78716c;
+  font-weight: 500;
+}
+
+/* 6. Realtime Sync Latency Widget */
+.widgetLatencyBox {
+  background: #faf8f5;
+  border: 1px solid #ede7db;
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.widgetLatencyNumber {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #18181b;
+  display: flex;
+  align-items: baseline;
+  gap: 0.2rem;
+}
+
+.widgetLatencyUnit {
+  font-size: 0.6875rem;
+  color: #78716c;
+  font-weight: 500;
+}
+
+.widgetStreamStatus {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #78716c;
+}
+
+/* Responsive Grid Configuration (4-columns) */
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .magic-bento-card:nth-child(3) {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .magic-bento-card:nth-child(4) {
+    grid-column: 1 / span 2;
+    grid-row: 2 / span 2;
+  }
+
+  .magic-bento-card:nth-child(6) {
+    grid-column: 4;
+    grid-row: 3;
+  }
+}
+
+/* Border glow effect with refined subtle architectural tone */
+.magic-bento-card--border-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: radial-gradient(
+    var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+    rgba(24, 24, 27, calc(var(--glow-intensity) * 0.4)) 0%,
+    rgba(180, 150, 110, calc(var(--glow-intensity) * 0.25)) 35%,
+    transparent 65%
+  );
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.particle-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.particle::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: rgba(24, 24, 27, 0.15);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Global spotlight styles - Subtle warm glow matching cream theme */
+.global-spotlight {
+  mix-blend-mode: multiply;
+  will-change: transform, opacity;
+  z-index: 200 !important;
+  pointer-events: none;
+}
+
+.bento-section {
+  position: relative;
+  user-select: none;
+}

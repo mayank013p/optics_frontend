@@ -1,0 +1,127 @@
+/* Optics Design System - Multi-Theme Design Tokens */
+
+/* Default :root is Warm Cream - Ivors Clean Editorial Theme */
+:root,
+[data-theme="cream"],
+[data-theme="warm-cream"],
+[data-theme="light"] {
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f3efea;
+  --bg-tertiary: #ebe5dc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f5f0;
+  --bg-badge: #ede8df;
+  --bg-surface: #f3efea;
+  --bg-pill: #1c1917;
+  --text-pill: #ffffff;
+  
+  --text-main: #1c1917;
+  --text-muted: #57534e;
+  --text-dim: #78716c;
+  
+  --accent-primary: #1c1917;
+  --accent-amber: #1c1917;
+  --accent-amber-subtle: rgba(28, 25, 23, 0.08);
+  --accent-cyan: #0369a1;
+  --accent-emerald: #047857;
+  --accent-magenta: #be123c;
+  
+  --border-color: #e6e1d6;
+  --border-subtle: #efece6;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
+  
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+  
+  --button-primary-bg: #1c1917;
+  --button-primary-text: #ffffff;
+}
+
+/* Dark Mode */
+[data-theme="dark"],
+[data-theme="pro-dark"] {
+  --bg-primary: #09090b;
+  --bg-secondary: #121215;
+  --bg-tertiary: #1c1c20;
+  --bg-card: #18181b;
+  --bg-card-hover: #222226;
+  --bg-badge: #27272a;
+  --bg-surface: #121215;
+  --bg-pill: #fafafa;
+  --text-pill: #09090b;
+  
+  --text-main: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+  
+  --accent-primary: #38bdf8;
+  --accent-amber: #f59e0b;
+  --accent-amber-subtle: rgba(245, 158, 11, 0.15);
+  --accent-cyan: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-magenta: #f43f5e;
+  
+  --border-color: #27272a;
+  --border-subtle: #1c1c20;
+
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 10px 25px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
+  
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+  
+  --button-primary-bg: #fafafa;
+  --button-primary-text: #09090b;
+}
+
+/* Amber Charcoal Mode */
+[data-theme="amber-crt"],
+[data-theme="amber"],
+[data-theme="midnight"] {
+  --bg-primary: #0c0a09;
+  --bg-secondary: #171412;
+  --bg-tertiary: #231f1d;
+  --bg-card: #1c1917;
+  --bg-card-hover: #292524;
+  --bg-badge: #292524;
+  --bg-surface: #171412;
+  --bg-pill: #f59e0b;
+  --text-pill: #0c0a09;
+  
+  --text-main: #fafaf9;
+  --text-muted: #a8a29e;
+  --text-dim: #78716c;
+  
+  --accent-primary: #f59e0b;
+  --accent-amber: #f59e0b;
+  --accent-amber-subtle: rgba(245, 158, 11, 0.18);
+  --accent-cyan: #38bdf8;
+  --accent-emerald: #10b981;
+  --accent-magenta: #f43f5e;
+  
+  --border-color: #292524;
+  --border-subtle: #1c1c20;
+
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 10px 25px -3px rgba(245, 158, 11, 0.15);
+  
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-full: 9999px;
+  
+  --button-primary-bg: #f59e0b;
+  --button-primary-text: #0c0a09;
+}

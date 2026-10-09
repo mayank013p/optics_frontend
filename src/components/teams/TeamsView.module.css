@@ -1,0 +1,385 @@
+.container {
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 2rem 2rem 3.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+}
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  padding: 0.625rem 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  z-index: 50;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: var(--bg-pill);
+  color: var(--text-pill);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scopeToggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1875rem;
+  border-radius: 9999px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  gap: 0.25rem;
+}
+
+.scopeBtn {
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.scopeBtn:hover {
+  color: var(--text-main);
+}
+
+.scopeBtnActive {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.searchWrapper {
+  position: relative;
+  width: 16rem;
+}
+
+.searchIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.375rem 0.75rem 0.375rem 2rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--bg-secondary);
+  border: 1px solid transparent;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.searchInput:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.searchInput:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 2px var(--accent-amber-subtle);
+}
+
+.inviteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.1s, filter 0.15s;
+}
+
+.inviteBtn:hover {
+  filter: brightness(1.08);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.summaryCard {
+  padding: 1rem;
+  border-radius: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.summaryTitle {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.summaryValue {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 0.125rem;
+  color: var(--text-main);
+}
+
+.filterPills {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem;
+  border-radius: 1rem;
+  width: fit-content;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.filterPill {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterPillActive {
+  background-color: var(--bg-pill) !important;
+  color: var(--text-pill) !important;
+}
+
+.tableContainer {
+  flex-shrink: 0;
+  border-radius: 1.5rem;
+  overflow-x: auto;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.table {
+  width: 100%;
+  min-width: 44rem;
+  text-align: left;
+  font-size: 0.75rem;
+  border-collapse: collapse;
+}
+
+.thead {
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  background-color: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+.th {
+  padding: 1rem;
+}
+
+.tr {
+  border-bottom: 1px solid var(--border-subtle);
+  transition: opacity 0.15s ease;
+}
+
+.tr:hover {
+  opacity: 0.9;
+}
+
+.td {
+  padding: 1rem;
+}
+
+.memberCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: var(--bg-pill);
+  color: var(--text-pill);
+}
+
+.memberName {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.memberJob {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.roleSelect {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+
+.roleSelect:hover {
+  background-color: var(--bg-secondary);
+}
+
+.roleSelect:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+.teamSelect {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  transition: all 0.15s ease;
+}
+
+.teamSelect:hover {
+  background-color: var(--bg-secondary);
+}
+
+.teamSelect:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+.roleBadge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--bg-badge);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.actionBtnGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.iconBtn {
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.iconBtn:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.deleteBtn {
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.deleteBtn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.statusActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}

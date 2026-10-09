@@ -1,0 +1,530 @@
+/* Optics Editorial Cream Theme - Frameless Auth with Floating Lined Fields */
+
+.authPage {
+  /* Enforce Warm Cream Editorial Palette */
+  --bg-primary: #faf8f5;
+  --bg-secondary: #f3efea;
+  --bg-tertiary: #ebe5dc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f5f0;
+  --bg-badge: #ede8df;
+  --bg-surface: #f3efea;
+  --bg-pill: #1c1917;
+  --text-pill: #ffffff;
+
+  --text-main: #1c1917;
+  --text-muted: #57534e;
+  --text-dim: #78716c;
+
+  --accent-primary: #1c1917;
+  --accent-amber: #b45309;
+  --accent-amber-subtle: rgba(180, 83, 9, 0.08);
+
+  --border-color: #e6e1d6;
+  --border-subtle: #efece6;
+
+  --button-primary-bg: #1c1917;
+  --button-primary-text: #ffffff;
+
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #faf8f5;
+  background-image: 
+    radial-gradient(ellipse at 50% -10%, #f4ede3 0%, transparent 65%),
+    radial-gradient(circle at 100% 100%, #eee7dc 0%, transparent 40%);
+  color: #1c1917;
+  font-family: var(--font-sans);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 1. Top Navigation Bar (Positioned in Corners) */
+.topNav {
+  width: 100%;
+  padding: 1.5rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  z-index: 20;
+}
+
+.topLeftBrand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s ease;
+}
+
+.topLeftBrand:hover {
+  opacity: 0.85;
+}
+
+.topRightNav {
+  display: flex;
+  align-items: center;
+}
+
+.navText {
+  font-size: 0.8125rem;
+  color: #78716c;
+}
+
+.navLink {
+  background: none;
+  border: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1c1917;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.navLink:hover {
+  color: #b45309;
+}
+
+/* 2. Main Centered Form (Frameless, Creamy) */
+.centerContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem 3.5rem;
+  z-index: 10;
+}
+
+.framelessFormArea {
+  width: 100%;
+  max-width: 24rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Header Area */
+.headerArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  color: #1c1917;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.8125rem;
+  color: #6e675f;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Form Structure */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Floating Lined Fields (Underline only - Placeholder floats to header on click/focus) */
+.floatingField {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-top: 1.25rem;
+  width: 100%;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.lineInput {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid #ded8cb;
+  border-radius: 0;
+  padding: 0.45rem 0 0.5rem 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #1c1917;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.lineInputWithAction {
+  padding-right: 2.25rem;
+}
+
+.lineInputOtp {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  padding-right: 7rem;
+}
+
+/* Placeholder resting directly on the line */
+.floatingLabel {
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: #8c8479;
+  pointer-events: none;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              font-size 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.2s ease,
+              letter-spacing 0.2s ease;
+  transform-origin: left top;
+  user-select: none;
+}
+
+/* When focused or filled with text: floats up into the header position above the line */
+.lineInput:focus ~ .floatingLabel,
+.lineInput:not(:placeholder-shown) ~ .floatingLabel,
+.labelFloated {
+  transform: translateY(-1.3rem);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #78716c;
+}
+
+.lineInput:focus ~ .floatingLabel {
+  color: #1c1917;
+}
+
+/* Active Line Indicator */
+.lineActiveBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #1c1917;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.lineInput:focus ~ .lineActiveBar {
+  transform: scaleX(1);
+}
+
+.inputError {
+  border-bottom-color: #dc2626 !important;
+}
+
+.lineInput.inputError ~ .lineActiveBar {
+  background-color: #dc2626;
+  transform: scaleX(1);
+}
+
+.lineInput.inputError ~ .floatingLabel {
+  color: #dc2626 !important;
+}
+
+.inlineFieldError {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #dc2626;
+  margin-top: 0.35rem;
+}
+
+.inlineGeneralError {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #dc2626;
+  text-align: center;
+  padding: 0.25rem 0;
+}
+
+/* Password Eye Button */
+.eyeBtn {
+  position: absolute;
+  right: 0;
+  bottom: 0.45rem;
+  background: none;
+  border: none;
+  color: #8c8479;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.eyeBtn:hover {
+  color: #1c1917;
+}
+
+/* Forgot Password link under password field */
+.forgotPasswordRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.35rem;
+}
+
+.forgotLink {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #78716c;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.forgotLink:hover {
+  color: #1c1917;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Inline Verification Code Resend & Notice */
+.inlineResendWrapper {
+  position: absolute;
+  right: 0;
+  bottom: 0.45rem;
+  display: flex;
+  align-items: center;
+}
+
+.inlineResendBtn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #78716c;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.inlineResendBtn:hover:not(:disabled) {
+  color: #1c1917;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.inlineResendBtn:disabled {
+  color: #a8a29e;
+  cursor: not-allowed;
+}
+
+.otpSubtitleNotice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-wrap: wrap;
+}
+
+.otpEmailHighlight {
+  color: #1c1917;
+  font-weight: 600;
+}
+
+.changeEmailLink {
+  background: none;
+  border: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1c1917;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  padding: 0;
+  margin-left: 0.25rem;
+}
+
+.changeEmailLink:hover {
+  color: #b45309;
+}
+
+/* Primary Action Button */
+.submitBtn {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  background-color: #1c1917;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 5px rgba(28, 25, 23, 0.15);
+  transition: transform 0.1s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.submitBtn:hover:not(:disabled) {
+  filter: brightness(1.15);
+  box-shadow: 0 4px 12px rgba(28, 25, 23, 0.22);
+}
+
+.submitBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Alternative Auth Row */
+.altAuthRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  color: #78716c;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.textLink {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1c1917;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.textLink:hover {
+  color: #b45309;
+}
+
+/* Back Link Row */
+.backLinkRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #78716c;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.15s ease;
+}
+
+.backLink:hover {
+  color: #1c1917;
+}
+
+
+.formFooter {
+  font-size: 0.6875rem;
+  color: #78716c;
+  text-align: center;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+}
+
+/* 3. Minimal Single-Line Bottom Footer */
+.minimalFooter {
+  width: 100%;
+  padding: 1.25rem 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(222, 216, 203, 0.7);
+  box-sizing: border-box;
+  font-size: 0.75rem;
+  color: #78716c;
+  z-index: 10;
+  margin-top: auto;
+}
+
+.footerBrand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #78716c;
+  font-weight: 500;
+}
+
+.footerNav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.footerSep {
+  color: #c4beb3;
+  user-select: none;
+}
+
+.footerLink {
+  color: #78716c;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerLink:hover {
+  color: #1c1917;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .topNav {
+    padding: 1.25rem 1.5rem;
+  }
+  .minimalFooter {
+    padding: 1rem 1.25rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.625rem;
+    text-align: center;
+  }
+}

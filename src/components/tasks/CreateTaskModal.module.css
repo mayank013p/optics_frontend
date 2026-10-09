@@ -1,0 +1,460 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.18s ease-out;
+  box-sizing: border-box;
+}
+
+.modalCard {
+  width: 100%;
+  max-width: 48rem;
+  height: 100vh;
+  max-height: 100vh;
+  background-color: var(--bg-card);
+  border-left: 1px solid var(--border-color);
+  box-shadow: -12px 0 45px -5px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-main);
+  box-sizing: border-box;
+  animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (max-width: 640px) {
+  .modalCard {
+    max-width: 100%;
+  }
+}
+
+.modalHeader {
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-card);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.modalHeaderTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.closeBtn {
+  padding: 0.375rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  transition: color 0.15s, background-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeBtn:hover {
+  color: var(--text-main);
+  background-color: var(--bg-secondary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.modalBody {
+  padding: 1.5rem 1.75rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1.15fr);
+  gap: 2rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .modalBody {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.mainColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.sideColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .sideColumn {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 1.25rem;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+  gap: 0.25rem;
+}
+
+.fieldLabel {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Frameless Jira-style Title Field */
+.titleInput {
+  width: 100%;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  padding: 0.375rem 0.5rem;
+  margin-left: -0.5rem;
+  outline: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.titleInput:hover {
+  background-color: var(--bg-secondary);
+}
+
+.titleInput:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 2px var(--accent-amber-subtle);
+}
+
+/* Frameless Jira-style Description Field */
+.textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  min-height: 5.5rem;
+  padding: 0.5rem;
+  margin-left: -0.5rem;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.textarea:hover {
+  background-color: var(--bg-secondary);
+}
+
+.textarea:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 2px var(--accent-amber-subtle);
+}
+
+/* Frameless Jira-style Selects and Sidebar Inputs */
+.select, .input {
+  width: 100%;
+  padding: 0.4375rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  outline: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.select:hover, .input:hover {
+  background-color: var(--bg-secondary);
+}
+
+.select:focus, .input:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 2px var(--accent-amber-subtle);
+}
+
+.sectionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-sizing: border-box;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.labelsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.labelPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.labelPill:hover {
+  background-color: var(--bg-badge);
+}
+
+.removeBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.removeBtn:hover {
+  color: #f43f5e;
+}
+
+.subtaskList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.subtaskItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--text-main);
+  transition: background-color 0.12s ease;
+}
+
+.subtaskItem:hover {
+  background-color: var(--bg-secondary);
+}
+
+.subtaskInputRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.subtaskInput {
+  flex: 1;
+  padding: 0.4375rem 0.625rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--text-main);
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.subtaskInput:hover {
+  background-color: var(--bg-secondary);
+}
+
+.subtaskInput:focus {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 2px var(--accent-amber-subtle);
+}
+
+.assigneeDropdown {
+  padding: 0.375rem;
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.4);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.assigneeOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  transition: background-color 0.12s;
+}
+
+.assigneeOption:hover {
+  background-color: var(--bg-secondary);
+}
+
+.assigneeAvatar {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5625rem;
+  font-weight: 800;
+  background-color: var(--bg-pill);
+  color: var(--text-pill);
+}
+
+.assigneesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.assigneeCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3125rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  transition: background-color 0.12s;
+}
+
+.assigneeCard:hover {
+  background-color: var(--bg-secondary);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  padding: 0.875rem 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-card);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.cancelBtn {
+  padding: 0.4375rem 0.875rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.cancelBtn:hover {
+  color: var(--text-main);
+}
+
+.submitBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4375rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: none;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.1s, filter 0.15s;
+}
+
+.submitBtn:hover {
+  filter: brightness(1.08);
+}
+
+.submitBtn:active {
+  transform: scale(0.98);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from { 
+    transform: translateX(100%); 
+  }
+  to { 
+    transform: translateX(0); 
+  }
+}

@@ -1,0 +1,586 @@
+.sidebar {
+  width: 16.5rem;
+  height: 100vh;
+  border-right: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
+  z-index: 20;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.topSection {
+  flex: 1;
+  min-height: 0;
+  padding: 1rem 0.875rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  overflow-y: auto;
+}
+
+.brandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.375rem;
+}
+
+.brandLogo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.brandLogo:hover {
+  transform: scale(1.05);
+}
+
+.brandTitle {
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.brandSubtitle {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Workspace Selector (Jira Style Top Switcher) */
+.workspaceSelectorBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-align: left;
+  box-shadow: var(--shadow-card);
+}
+
+.workspaceSelectorBtn:hover {
+  border-color: var(--text-dim);
+}
+
+.workspaceName {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dropdown Menu */
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.375rem;
+  padding: 0.375rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-hover);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dropdownHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.375rem 0.5rem 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.dropdownList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: left;
+  gap: 0.5rem;
+}
+
+.dropdownItem:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-subtle);
+}
+
+.dropdownItemActive {
+  background-color: var(--bg-secondary);
+  border-color: var(--border-color);
+  font-weight: 700;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: var(--border-subtle);
+  margin: 0.25rem 0;
+}
+
+.dropdownActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: left;
+  width: 100%;
+}
+
+.dropdownActionBtn:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+/* Jira Style Inline Projects List */
+.projectsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.25rem;
+}
+
+.projectsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem 0.125rem;
+}
+
+.projectsLabel {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.newProjectIconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.newProjectIconBtn:hover {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.projectRowContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.projectRowContainer:hover {
+  background-color: var(--bg-card);
+  border-color: var(--border-subtle);
+}
+
+.projectRowActive {
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-card);
+}
+
+.projectMainBtn {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.5rem 0.4375rem 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.12s ease;
+}
+
+.projectRowContainer:hover .projectMainBtn,
+.projectRowActive .projectMainBtn {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.projectMoreBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.375rem;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+}
+
+.projectRowContainer:hover .projectMoreBtn,
+.projectRowActive .projectMoreBtn,
+.projectMoreBtnOpen {
+  opacity: 1 !important;
+}
+
+.projectMoreBtn:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+.projectContextMenu {
+  position: absolute;
+  top: 100%;
+  right: 0.25rem;
+  margin-top: 0.25rem;
+  width: 12.5rem;
+  padding: 0.375rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  animation: fadeIn 0.12s ease-out;
+}
+
+.projectContextMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4375rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.projectContextMenuItem:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-main);
+}
+
+.projectContextMenuDanger {
+  color: #ef4444 !important;
+}
+
+.projectContextMenuDanger:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+.projectListItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4375rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.projectListItem:hover {
+  color: var(--text-main);
+  background-color: var(--bg-card);
+  border-color: var(--border-subtle);
+}
+
+.projectListItemActive {
+  color: var(--text-main);
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+}
+
+.projectKeyBadge {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 800;
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--radius-xs);
+  background-color: var(--bg-badge);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+
+.moreProjectsBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: left;
+  width: 100%;
+}
+
+.moreProjectsBtn:hover {
+  color: var(--text-main);
+  background-color: var(--bg-card);
+}
+
+/* Nav Items */
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 0.375rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.navLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  padding: 0.375rem 0.5rem 0.125rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.navItem:hover {
+  color: var(--text-main);
+  background-color: var(--bg-card);
+  border-color: var(--border-subtle);
+}
+
+.navItemActive {
+  color: var(--text-main);
+  background-color: var(--bg-card);
+  border-color: var(--border-color);
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+}
+
+/* Bottom Section */
+.bottomSection {
+  padding: 0.875rem 0.875rem 1rem;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.themeGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 0.1875rem;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  gap: 0.1875rem;
+}
+
+.themeBtn {
+  padding: 0.375rem 0.25rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3125rem;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+}
+
+.themeBtnActive {
+  background-color: var(--bg-badge);
+  color: var(--text-main);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+/* User Profile Card in Sidebar */
+.userSectionCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.userSectionCard:hover {
+  border-color: var(--text-dim);
+  transform: translateY(-1px);
+}
+
+.userSectionCardActive {
+  border-color: var(--text-main);
+}
+
+.userAvatar {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  background-color: var(--bg-pill);
+  color: var(--text-pill);
+  flex-shrink: 0;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.userEmail {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.logoutBtn {
+  padding: 0.3125rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.logoutBtn:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
