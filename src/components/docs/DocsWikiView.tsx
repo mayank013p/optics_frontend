@@ -572,6 +572,59 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
     // 1. Headings (H1, H2, H3) & Blockquote & Code Block Toggle
     if (command === 'formatBlock' || command === 'heading') {
       const targetTag = value.toLowerCase().replace(/[<>]/g, '');
+
+      // A. If specific text is highlighted / selected, format ONLY the selected text
+      if (sel && !sel.isCollapsed && sel.rangeCount > 0 && ['h1', 'h2', 'h3'].includes(targetTag)) {
+        const targetClass = targetTag === 'h1' ? styles.inlineH1 : targetTag === 'h2' ? styles.inlineH2 : styles.inlineH3;
+        
+        const existingSpan = findAncestor(sel.anchorNode, (el) =>
+          el.classList.contains(styles.inlineH1) ||
+          el.classList.contains(styles.inlineH2) ||
+          el.classList.contains(styles.inlineH3)
+        );
+
+        if (existingSpan) {
+          if (existingSpan.classList.contains(targetClass)) {
+            // Toggle OFF: unwrap span, keep text selected
+            const parent = existingSpan.parentNode;
+            const textNode = document.createTextNode(existingSpan.textContent || '');
+            parent?.replaceChild(textNode, existingSpan);
+
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNode(textNode);
+            sel.addRange(newRange);
+          } else {
+            // Switch heading style (e.g. from H2 to H1)
+            existingSpan.className = targetClass;
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNode(existingSpan);
+            sel.addRange(newRange);
+          }
+        } else {
+          // Toggle ON: wrap ONLY selected text in heading span and keep it selected
+          const range = sel.getRangeAt(0);
+          const span = document.createElement('span');
+          span.className = targetClass;
+          try {
+            const fragment = range.extractContents();
+            span.appendChild(fragment);
+            range.insertNode(span);
+
+            sel.removeAllRanges();
+            const newRange = document.createRange();
+            newRange.selectNode(span);
+            sel.addRange(newRange);
+          } catch (err) {
+            console.warn('Selected text heading fallback:', err);
+          }
+        }
+        handleEditorInput();
+        return;
+      }
+
+      // B. Line-level Block fallback when no text is selected (Cursor collapsed)
       const currentBlock = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) =>
         ['h1', 'h2', 'h3', 'blockquote', 'pre'].includes(el.tagName.toLowerCase())
       ) : null;
