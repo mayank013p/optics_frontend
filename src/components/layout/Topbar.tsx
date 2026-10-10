@@ -63,7 +63,7 @@ export const Topbar: React.FC = () => {
 
       {/* Middle: Clean Search bar with Cmd+K */}
       <div className={styles.searchWrapper}>
-        <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2" strokeWidth={2} style={{ color: 'var(--text-muted)' }} />
+        <Search className={styles.searchIcon} strokeWidth={2} />
         <input
           ref={searchInputRef}
           type="text"

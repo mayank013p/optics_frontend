@@ -97,14 +97,18 @@
 .inputIcon {
   position: absolute;
   left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
   width: 1rem;
   height: 1rem;
   color: var(--text-muted);
+  pointer-events: none;
+  z-index: 2;
 }
 
 .input {
   width: 100%;
-  padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+  padding: 0.625rem 0.875rem 0.625rem 2.75rem !important;
   border-radius: 0.875rem;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -113,6 +117,7 @@
   color: var(--text-main);
   outline: none;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .input:hover {

@@ -69,22 +69,25 @@
 
 .searchBox {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .searchIcon {
   width: 0.8125rem;
   height: 0.8125rem;
   position: absolute;
-  left: 0.6875rem;
+  left: 0.75rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
   pointer-events: none;
+  z-index: 2;
 }
 
 .searchInput {
   width: 100%;
-  padding: 0.4375rem 0.75rem 0.4375rem 1.875rem;
+  padding: 0.4375rem 0.75rem 0.4375rem 2.375rem !important;
   border-radius: 0.75rem;
   font-size: 0.75rem;
   font-weight: 500;
@@ -93,6 +96,7 @@
   color: var(--text-main);
   outline: none;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .searchInput:focus {
