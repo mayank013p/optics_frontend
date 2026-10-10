@@ -1018,43 +1018,37 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
                   id: 0,
                   num: '01',
                   tag: 'Real-Time Sync',
-                  q: 'How fast does Optics update for the team?',
-                  summary: 'Sub-50ms WebSocket mesh with instantaneous multiplayer state sync.'
+                  q: 'How fast does Optics update for the team?'
                 },
                 {
                   id: 1,
                   num: '02',
                   tag: 'Data Migration',
-                  q: 'Can we import our existing tasks and projects?',
-                  summary: '1-click import from CSV, JSON, and standard project management platforms.'
+                  q: 'Can we import our existing tasks and projects?'
                 },
                 {
                   id: 2,
                   num: '03',
                   tag: 'Security & RBAC',
-                  q: 'How do team permissions and access roles work?',
-                  summary: 'Granular role hierarchies with encrypted audit telemetry and guest sandboxing.'
+                  q: 'How do team permissions and access roles work?'
                 },
                 {
                   id: 3,
                   num: '04',
-                  tag: 'Workspace Topology',
-                  q: 'Can we organize multiple projects and squads?',
-                  summary: 'Unlimited isolated workspaces with instant ⌘K project switching.'
+                  tag: 'Topology',
+                  q: 'Can we organize multiple projects and squads?'
                 },
                 {
                   id: 4,
                   num: '05',
-                  tag: 'Transparent Value',
-                  q: 'Is there any credit card requirement or paid tier?',
-                  summary: '100% free with unlimited tasks, boards, and members forever.'
+                  tag: 'Pricing',
+                  q: 'Is there any credit card requirement or paid tier?'
                 },
                 {
                   id: 5,
                   num: '06',
-                  tag: 'Developer Flow',
-                  q: 'How does Optics integrate with git workflows?',
-                  summary: 'Direct GitHub PR linking with automated column status progression on merge.'
+                  tag: 'Toolchain',
+                  q: 'How does Optics integrate with git workflows?'
                 }
               ].map((item) => (
                 <button
@@ -1066,13 +1060,11 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
                   <div className={styles.faqQuestionBtnLeft}>
                     <span className={styles.faqQuestionNum}>{item.num}</span>
                     <div className={styles.faqQuestionTextGroup}>
-                      <span className={styles.faqQuestionTag}>{item.tag}</span>
                       <span className={styles.faqQuestionTitle}>{item.q}</span>
-                      <span className={styles.faqQuestionSummary}>{item.summary}</span>
                     </div>
                   </div>
                   <div className={styles.faqQuestionArrowWrap}>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </div>
                 </button>
               ))}

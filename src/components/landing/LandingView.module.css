@@ -989,9 +989,9 @@
 
 .faqTwoColContainer {
   display: grid;
-  grid-template-columns: 440px 1fr;
-  gap: 3.5rem;
-  align-items: start;
+  grid-template-columns: 360px 1fr;
+  gap: 3rem;
+  align-items: center;
   width: 100%;
   box-sizing: border-box;
 }
@@ -1000,7 +1000,7 @@
 .faqQuestionsCol {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 0.875rem;
   width: 100%;
 }
 
@@ -1008,12 +1008,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.5rem;
+  padding: 0 0.25rem;
 }
 
 .faqQuestionsHeaderLabel {
   font-family: var(--font-mono, monospace);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #78716c;
@@ -1022,18 +1022,18 @@
 
 .faqQuestionsCount {
   font-family: var(--font-mono, monospace);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 600;
   color: #a8a29e;
   background: #ede7db;
-  padding: 0.15rem 0.5rem;
+  padding: 0.125rem 0.45rem;
   border-radius: 9999px;
 }
 
 .faqQuestionsList {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.45rem;
   width: 100%;
 }
 
@@ -1045,42 +1045,41 @@
   text-align: left;
   background: #ffffff;
   border: 1px solid #e7e2d8;
-  border-radius: 16px;
-  padding: 1.125rem 1.25rem;
+  border-radius: 12px;
+  padding: 0.65rem 0.875rem;
   cursor: pointer;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-  gap: 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  gap: 0.75rem;
 }
 
 .faqQuestionBtn:hover {
   border-color: #d6cfc3;
-  transform: translateX(4px);
+  transform: translateX(3px);
   background: #faf8f5;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .faqQuestionBtnActive {
   background: #18181b !important;
   border-color: #18181b !important;
-  transform: translateX(8px);
-  box-shadow: 0 10px 25px -4px rgba(24, 24, 27, 0.2);
+  transform: translateX(6px);
+  box-shadow: 0 8px 20px -4px rgba(24, 24, 27, 0.22);
 }
 
 .faqQuestionBtnLeft {
   display: flex;
-  align-items: flex-start;
-  gap: 0.875rem;
+  align-items: center;
+  gap: 0.625rem;
   flex: 1;
   min-width: 0;
 }
 
 .faqQuestionNum {
   font-family: var(--font-mono, monospace);
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   color: #a8a29e;
-  padding-top: 0.15rem;
   flex-shrink: 0;
   transition: color 0.2s ease;
 }
@@ -1091,32 +1090,21 @@
 
 .faqQuestionTextGroup {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  align-items: center;
+  gap: 0.35rem;
   min-width: 0;
-}
-
-.faqQuestionTag {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #78716c;
-  transition: color 0.2s ease;
-}
-
-.faqQuestionBtnActive .faqQuestionTag {
-  color: #a1a1aa;
 }
 
 .faqQuestionTitle {
   font-family: 'Space Grotesk', -apple-system, sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 700;
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: #18181b;
-  line-height: 1.35;
+  line-height: 1.3;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: color 0.2s ease;
 }
 
@@ -1124,24 +1112,9 @@
   color: #ffffff;
 }
 
-.faqQuestionSummary {
-  font-size: 0.775rem;
-  color: #78716c;
-  line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 320px;
-  transition: color 0.2s ease;
-}
-
-.faqQuestionBtnActive .faqQuestionSummary {
-  color: #d4d4d8;
-}
-
 .faqQuestionArrowWrap {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1160,7 +1133,6 @@
 .faqQuestionBtnActive .faqQuestionArrowWrap {
   color: #18181b;
   background: #ffffff;
-  transform: rotate(0deg);
 }
 
 /* Right Column: Large CardSwap Slide Deck */
