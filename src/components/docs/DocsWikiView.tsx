@@ -33,7 +33,9 @@ import {
   FileCode,
   Link as LinkIcon,
   RemoveFormatting,
-  Highlighter
+  Highlighter,
+  X,
+  ExternalLink
 } from 'lucide-react';
 import { Document } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
@@ -88,6 +90,18 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
   const [docSearchQuery, setDocSearchQuery] = useState('');
   const [openMenuDocId, setOpenMenuDocId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Link Modal / Popover state
+  const [linkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkModalUrl, setLinkModalUrl] = useState('');
+  const [linkModalText, setLinkModalText] = useState('');
+  const [isExistingLink, setIsExistingLink] = useState(false);
+  const [savedSelectionRange, setSavedSelectionRange] = useState<Range | null>(null);
+
+  // Rename Document Modal state
+  const [renameModalOpen, setRenameModalOpen] = useState(false);
+  const [renameDocTarget, setRenameDocTarget] = useState<Document | null>(null);
+  const [renameTitle, setRenameTitle] = useState('');
 
   // Active toolbar formats state
   const [activeFormats, setActiveFormats] = useState<ActiveFormatState>({
@@ -506,15 +520,25 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
   const handleRenameDoc = (doc: Document, e: React.MouseEvent) => {
     e.stopPropagation();
     setOpenMenuDocId(null);
-    const newName = prompt('Enter new document title:', doc.title);
-    if (newName && newName.trim() && newName.trim() !== doc.title) {
-      const updated = { ...doc, title: newName.trim(), updatedAt: new Date().toISOString() };
+    setRenameDocTarget(doc);
+    setRenameTitle(doc.title);
+    setRenameModalOpen(true);
+  };
+
+  const handleSaveRename = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!renameDocTarget || !renameTitle.trim()) return;
+    const trimmed = renameTitle.trim();
+    if (trimmed !== renameDocTarget.title) {
+      const updated = { ...renameDocTarget, title: trimmed, updatedAt: new Date().toISOString() };
       onSaveDoc(updated);
-      if (doc.id === selectedDocId) {
-        setDocTitle(newName.trim());
+      if (renameDocTarget.id === selectedDocId) {
+        setDocTitle(trimmed);
       }
-      showToast(`Renamed to "${newName.trim()}"`);
+      showToast(`Renamed to "${trimmed}"`);
     }
+    setRenameModalOpen(false);
+    setRenameDocTarget(null);
   };
 
   // 3-Dot: Duplicate Document
@@ -565,6 +589,246 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       curr = curr.parentNode;
     }
     return null;
+  };
+
+  // Modern Link Popover Opener (Cmd+K or Toolbar Click)
+  const openLinkModal = () => {
+    if (!editorRef.current) return;
+    const sel = window.getSelection();
+    let existingUrl = '';
+    let selectedText = '';
+    let isExisting = false;
+
+    const linkAncestor = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'a') : null;
+    if (linkAncestor) {
+      existingUrl = linkAncestor.getAttribute('href') || '';
+      selectedText = linkAncestor.textContent || '';
+      isExisting = true;
+    } else if (sel && !sel.isCollapsed) {
+      selectedText = sel.toString();
+      if (/^https?:\/\/[^\s]+$/i.test(selectedText.trim()) || /^www\.[^\s]+$/i.test(selectedText.trim())) {
+        existingUrl = selectedText.trim();
+      }
+    }
+
+    if (sel && sel.rangeCount > 0) {
+      setSavedSelectionRange(sel.getRangeAt(0).cloneRange());
+    } else {
+      setSavedSelectionRange(null);
+    }
+
+    setLinkModalUrl(existingUrl);
+    setLinkModalText(selectedText);
+    setIsExistingLink(isExisting);
+    setLinkModalOpen(true);
+  };
+
+  const handleApplyLink = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!linkModalUrl.trim()) return;
+
+    let formattedUrl = linkModalUrl.trim();
+    if (formattedUrl.startsWith('www.')) {
+      formattedUrl = `https://${formattedUrl}`;
+    } else if (!formattedUrl.startsWith('http://') && !formattedUrl.startsWith('https://') && !formattedUrl.startsWith('mailto:') && !formattedUrl.startsWith('#')) {
+      formattedUrl = `https://${formattedUrl}`;
+    }
+
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+
+    if (savedSelectionRange) {
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(savedSelectionRange);
+    }
+
+    const sel = window.getSelection();
+    const linkAncestor = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'a') : null;
+
+    if (linkAncestor) {
+      linkAncestor.setAttribute('href', formattedUrl);
+      linkAncestor.setAttribute('target', '_blank');
+      linkAncestor.setAttribute('rel', 'noopener noreferrer');
+      if (linkModalText.trim() && linkAncestor.textContent !== linkModalText.trim()) {
+        linkAncestor.textContent = linkModalText.trim();
+      }
+    } else if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+      document.execCommand('createLink', false, formattedUrl);
+    } else {
+      const textToShow = linkModalText.trim() || linkModalUrl.trim();
+      const linkHtml = `<a href="${formattedUrl}" target="_blank" rel="noopener noreferrer">${textToShow}</a>&nbsp;`;
+      document.execCommand('insertHTML', false, linkHtml);
+    }
+
+    setLinkModalOpen(false);
+    setSavedSelectionRange(null);
+    handleEditorInput();
+    showToast('Link saved');
+  };
+
+  const handleRemoveLink = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+
+    if (savedSelectionRange) {
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(savedSelectionRange);
+    }
+
+    const sel = window.getSelection();
+    const linkAncestor = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'a') : null;
+
+    if (linkAncestor) {
+      const parent = linkAncestor.parentNode;
+      while (linkAncestor.firstChild) {
+        parent?.insertBefore(linkAncestor.firstChild, linkAncestor);
+      }
+      parent?.removeChild(linkAncestor);
+    } else {
+      document.execCommand('unlink', false, undefined);
+    }
+
+    setLinkModalOpen(false);
+    setSavedSelectionRange(null);
+    handleEditorInput();
+    showToast('Link removed');
+  };
+
+  // URL Auto-detection on Paste (Like Notion, Slack, Google Docs)
+  const isUrl = (str: string) => {
+    const trimmed = str.trim();
+    return /^https?:\/\/[^\s]+$/i.test(trimmed) || /^www\.[^\s]+$/i.test(trimmed);
+  };
+
+  const handleEditorPaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const text = e.clipboardData.getData('text/plain');
+    if (!text) return;
+
+    const trimmed = text.trim();
+    if (isUrl(trimmed)) {
+      e.preventDefault();
+      const sel = window.getSelection();
+      let formattedUrl = trimmed;
+      if (formattedUrl.startsWith('www.')) {
+        formattedUrl = `https://${formattedUrl}`;
+      }
+
+      if (sel && !sel.isCollapsed && sel.rangeCount > 0) {
+        // Text is selected -> auto-link the selected text with pasted URL!
+        document.execCommand('createLink', false, formattedUrl);
+        handleEditorInput();
+        showToast('Linked selected text to URL');
+        return;
+      } else {
+        // No text selected -> insert clickable link with the URL as text
+        const linkHtml = `<a href="${formattedUrl}" target="_blank" rel="noopener noreferrer">${trimmed}</a>&nbsp;`;
+        document.execCommand('insertHTML', false, linkHtml);
+        handleEditorInput();
+        showToast('Inserted clickable link');
+        return;
+      }
+    }
+
+    // Plain text containing raw URLs -> auto linkify
+    const hasHtml = Boolean(e.clipboardData.getData('text/html'));
+    if (!hasHtml && /(https?:\/\/[^\s]+|www\.[^\s]+)/gi.test(text)) {
+      e.preventDefault();
+      const linkedHtml = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/gi, (match) => {
+          const href = match.startsWith('www.') ? `https://${match}` : match;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+        })
+        .replace(/\n/g, '<br/>');
+      document.execCommand('insertHTML', false, linkedHtml);
+      handleEditorInput();
+      return;
+    }
+  };
+
+  // URL Auto-detection on Space / Enter / Keyboard Shortcuts
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // 1. Keyboard shortcuts: Cmd+K / Ctrl+K opens Link Popover
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      openLinkModal();
+      return;
+    }
+    // Cmd+S saves
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      handleSave();
+      return;
+    }
+
+    // 2. Auto-link on Space or Enter when typing a URL
+    if (e.key === ' ' || e.key === 'Enter') {
+      const sel = window.getSelection();
+      if (sel && sel.isCollapsed && sel.anchorNode && sel.anchorNode.nodeType === Node.TEXT_NODE) {
+        const textNode = sel.anchorNode as Text;
+        const offset = sel.anchorOffset;
+        const textBefore = textNode.textContent?.slice(0, offset) || '';
+
+        // Check if the word typed right before caret is a URL
+        const match = textBefore.match(/(https?:\/\/[^\s]+|www\.[^\s]+)$/i);
+        if (match && match.index !== undefined) {
+          const urlMatch = match[0];
+          const insideAnchor = findAncestor(textNode, (el) => el.tagName.toLowerCase() === 'a');
+
+          if (!insideAnchor) {
+            e.preventDefault();
+            const startIndex = match.index;
+            const beforeUrl = textBefore.slice(0, startIndex);
+            const afterUrl = (textNode.textContent || '').slice(offset);
+
+            let href = urlMatch;
+            if (href.startsWith('www.')) {
+              href = `https://${href}`;
+            }
+
+            const parent = textNode.parentNode;
+            if (parent) {
+              const beforeNode = document.createTextNode(beforeUrl);
+              const linkNode = document.createElement('a');
+              linkNode.href = href;
+              linkNode.target = '_blank';
+              linkNode.rel = 'noopener noreferrer';
+              linkNode.textContent = urlMatch;
+
+              const spaceOrBrNode = e.key === ' ' ? document.createTextNode('\u00A0') : document.createElement('br');
+              const afterNode = document.createTextNode(afterUrl);
+
+              parent.insertBefore(beforeNode, textNode);
+              parent.insertBefore(linkNode, textNode);
+              parent.insertBefore(spaceOrBrNode, textNode);
+              parent.insertBefore(afterNode, textNode);
+              parent.removeChild(textNode);
+
+              // Move caret right after the space/br
+              const newRange = document.createRange();
+              if (e.key === ' ') {
+                newRange.setStartAfter(spaceOrBrNode);
+                newRange.setEndAfter(spaceOrBrNode);
+              } else {
+                newRange.setStart(afterNode, 0);
+                newRange.setEnd(afterNode, 0);
+              }
+              sel.removeAllRanges();
+              sel.addRange(newRange);
+
+              handleEditorInput();
+              return;
+            }
+          }
+        }
+      }
+    }
   };
 
   // High-Precision Rich Formatting Executor (Toggle ON / Toggle OFF)
@@ -734,19 +998,9 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       return;
     }
 
-    // 4. Link Insert / Remove
+    // 4. Link Insert / Edit (Opens modern popover instead of prompt)
     if (command === 'createLink') {
-      const linkAncestor = sel?.anchorNode ? findAncestor(sel.anchorNode, (el) => el.tagName.toLowerCase() === 'a') : null;
-      if (linkAncestor) {
-        // Toggle OFF: remove link
-        document.execCommand('unlink', false, undefined);
-      } else {
-        const url = prompt('Enter link URL (e.g. https://example.com):');
-        if (url && url.trim()) {
-          document.execCommand('createLink', false, url.trim());
-        }
-      }
-      handleEditorInput();
+      openLinkModal();
       return;
     }
 
@@ -1243,6 +1497,8 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                     ref={editorRef}
                     contentEditable={can('doc.create')}
                     onInput={handleEditorInput}
+                    onKeyDown={handleEditorKeyDown}
+                    onPaste={handleEditorPaste}
                     onKeyUp={updateToolbarActiveState}
                     onMouseUp={updateToolbarActiveState}
                     onBlur={handleSave}
@@ -1320,6 +1576,136 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
           </div>
         )}
       </div>
+
+      {/* Link Popover Modal */}
+      {linkModalOpen && (
+        <div className={styles.linkModalOverlay} onClick={() => setLinkModalOpen(false)}>
+          <div className={styles.linkModalCard} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.linkModalHeader}>
+              <div className={styles.linkModalTitle}>
+                <LinkIcon className="w-4 h-4" />
+                <span>{isExistingLink ? 'Edit Link' : 'Insert Link'}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setLinkModalOpen(false)}
+                className={styles.iconBtn}
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleApplyLink}>
+              <div className={styles.linkModalBody}>
+                <div className={styles.linkModalInputGroup}>
+                  <label className={styles.linkModalLabel}>Link URL</label>
+                  <input
+                    type="text"
+                    value={linkModalUrl}
+                    onChange={(e) => setLinkModalUrl(e.target.value)}
+                    placeholder="https://example.com, https://figma.com/..."
+                    className={styles.linkModalInput}
+                    autoFocus
+                  />
+                </div>
+
+                <div className={styles.linkModalInputGroup}>
+                  <label className={styles.linkModalLabel}>Display Text (Optional)</label>
+                  <input
+                    type="text"
+                    value={linkModalText}
+                    onChange={(e) => setLinkModalText(e.target.value)}
+                    placeholder="Link description or text to display"
+                    className={styles.linkModalInput}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.linkModalFooter}>
+                {isExistingLink && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveLink}
+                    className={styles.linkModalRemoveBtn}
+                  >
+                    Remove Link
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setLinkModalOpen(false)}
+                  className={styles.linkModalCancelBtn}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!linkModalUrl.trim()}
+                  className={styles.linkModalSaveBtn}
+                >
+                  {isExistingLink ? 'Update Link' : 'Apply Link'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Rename Document Modal */}
+      {renameModalOpen && renameDocTarget && (
+        <div className={styles.linkModalOverlay} onClick={() => setRenameModalOpen(false)}>
+          <div className={styles.linkModalCard} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.linkModalHeader}>
+              <div className={styles.linkModalTitle}>
+                <Edit2 className="w-4 h-4" />
+                <span>Rename Document</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRenameModalOpen(false)}
+                className={styles.iconBtn}
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveRename}>
+              <div className={styles.linkModalBody}>
+                <div className={styles.linkModalInputGroup}>
+                  <label className={styles.linkModalLabel}>Document Title</label>
+                  <input
+                    type="text"
+                    value={renameTitle}
+                    onChange={(e) => setRenameTitle(e.target.value)}
+                    placeholder="Enter document title..."
+                    className={styles.linkModalInput}
+                    autoFocus
+                  />
+                </div>
+              </div>
+
+              <div className={styles.linkModalFooter}>
+                <button
+                  type="button"
+                  onClick={() => setRenameModalOpen(false)}
+                  className={styles.linkModalCancelBtn}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={!renameTitle.trim()}
+                  className={styles.linkModalSaveBtn}
+                >
+                  Save Title
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
