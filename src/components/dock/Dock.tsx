@@ -63,48 +63,48 @@ export interface DockProps {
 
 const THEMES: Record<string, Record<string, string>> = {
   dark: {
-    '--dock-panel': 'rgba(28, 25, 33, 0.75)',
-    '--dock-panel-edge': 'rgba(255, 255, 255, 0.1)',
+    '--dock-panel': 'rgba(28, 25, 33, 0.85)',
+    '--dock-panel-edge': 'rgba(255, 255, 255, 0.12)',
     '--dock-panel-highlight': 'rgba(255, 255, 255, 0.08)',
-    '--dock-panel-shadow': '0 22px 44px -20px rgba(0, 0, 0, 0.8), 0 6px 16px -8px rgba(0, 0, 0, 0.5)',
-    '--dock-tile': 'linear-gradient(180deg, #322f3b 0%, #201e26 100%)',
-    '--dock-tile-edge': 'rgba(255, 255, 255, 0.08)',
+    '--dock-panel-shadow': '0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 4px 12px rgba(0, 0, 0, 0.4)',
+    '--dock-tile': 'rgba(255, 255, 255, 0.07)',
+    '--dock-tile-edge': 'rgba(255, 255, 255, 0.1)',
     '--dock-tile-highlight': 'rgba(255, 255, 255, 0.14)',
-    '--dock-tile-shadow': '0 4px 10px -4px rgba(0, 0, 0, 0.7)',
+    '--dock-tile-shadow': '0 2px 6px rgba(0, 0, 0, 0.4)',
     '--dock-ink': '#f4f4f5',
     '--dock-label': '#1c1921',
     '--dock-label-ink': '#f4f4f5',
-    '--dock-dot': 'rgba(255, 255, 255, 0.72)',
-    '--dock-separator': 'rgba(255, 255, 255, 0.12)',
+    '--dock-dot': '#38bdf8',
+    '--dock-separator': 'rgba(255, 255, 255, 0.14)',
     '--dock-press': 'brightness(0.75)',
-    '--dock-menu': 'rgba(32, 29, 38, 0.88)',
-    '--dock-menu-edge': 'rgba(255, 255, 255, 0.13)',
+    '--dock-menu': 'rgba(32, 29, 38, 0.92)',
+    '--dock-menu-edge': 'rgba(255, 255, 255, 0.15)',
     '--dock-menu-ink': '#f4f4f5',
-    '--dock-menu-muted': 'rgba(244, 244, 245, 0.42)',
+    '--dock-menu-muted': 'rgba(244, 244, 245, 0.45)',
     '--dock-menu-separator': 'rgba(255, 255, 255, 0.1)',
     '--dock-menu-shadow': '0 18px 40px -12px rgba(0, 0, 0, 0.65), 0 3px 10px rgba(0, 0, 0, 0.3)'
   },
   light: {
-    '--dock-panel': 'rgba(250, 248, 245, 0.88)',
-    '--dock-panel-edge': 'rgba(24, 24, 27, 0.08)',
-    '--dock-panel-highlight': 'rgba(255, 255, 255, 0.95)',
-    '--dock-panel-shadow': '0 22px 44px -22px rgba(24, 24, 27, 0.18), 0 6px 16px -10px rgba(24, 24, 27, 0.12)',
-    '--dock-tile': 'linear-gradient(180deg, #ffffff 0%, #f4f0ea 100%)',
-    '--dock-tile-edge': 'rgba(24, 24, 27, 0.09)',
+    '--dock-panel': 'rgba(255, 255, 255, 0.92)',
+    '--dock-panel-edge': '#e7e2d8',
+    '--dock-panel-highlight': 'rgba(255, 255, 255, 1)',
+    '--dock-panel-shadow': '0 12px 30px -6px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.05)',
+    '--dock-tile': '#f5f2ed',
+    '--dock-tile-edge': '#e7e2d8',
     '--dock-tile-highlight': 'rgba(255, 255, 255, 1)',
-    '--dock-tile-shadow': '0 4px 10px -5px rgba(24, 24, 27, 0.18)',
+    '--dock-tile-shadow': '0 1px 3px rgba(0, 0, 0, 0.06)',
     '--dock-ink': '#18181b',
-    '--dock-label': '#ffffff',
-    '--dock-label-ink': '#18181b',
-    '--dock-dot': 'rgba(24, 24, 27, 0.65)',
-    '--dock-separator': 'rgba(24, 24, 27, 0.12)',
-    '--dock-press': 'brightness(0.9)',
-    '--dock-menu': 'rgba(250, 248, 245, 0.92)',
-    '--dock-menu-edge': 'rgba(24, 24, 27, 0.1)',
+    '--dock-label': '#18181b',
+    '--dock-label-ink': '#ffffff',
+    '--dock-dot': '#18181b',
+    '--dock-separator': '#e7e2d8',
+    '--dock-press': 'brightness(0.92)',
+    '--dock-menu': 'rgba(255, 255, 255, 0.96)',
+    '--dock-menu-edge': '#e7e2d8',
     '--dock-menu-ink': '#18181b',
     '--dock-menu-muted': 'rgba(24, 24, 27, 0.5)',
-    '--dock-menu-separator': 'rgba(24, 24, 27, 0.1)',
-    '--dock-menu-shadow': '0 18px 40px -14px rgba(24, 24, 27, 0.2), 0 3px 10px rgba(24, 24, 27, 0.08)'
+    '--dock-menu-separator': 'rgba(24, 24, 27, 0.08)',
+    '--dock-menu-shadow': '0 18px 40px -14px rgba(24, 24, 27, 0.18), 0 3px 10px rgba(24, 24, 27, 0.06)'
   }
 };
 
@@ -562,8 +562,10 @@ export default function Dock({
     const host = root.offsetParent ?? document.documentElement;
     const measure = () => {
       const s = settingsRef.current;
-      const room = (s.vertical ? host.clientHeight : host.clientWidth) - EDGE * 2;
-      const next = s.length > 0 ? Math.min(1, Math.max(0.4, room / s.length)) : 1;
+      const clientW = host.clientWidth > 300 ? host.clientWidth : window.innerWidth;
+      const clientH = host.clientHeight > 300 ? host.clientHeight : window.innerHeight;
+      const room = (s.vertical ? clientH : clientW) - EDGE * 2;
+      const next = s.length > 0 ? Math.min(1, Math.max(0.7, room / s.length)) : 1;
       setFit(Math.round(next * 1000) / 1000);
     };
     measure();
