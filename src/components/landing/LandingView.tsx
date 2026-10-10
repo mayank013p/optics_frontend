@@ -210,8 +210,8 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
   return (
     <div className={styles.landingWrapper} data-theme="cream">
       {/* 1. Header & Navigation (Fixed top, product-focused navigation) */}
-      <nav className={styles.navbar} id="navbar">
-        <a href="#hero" className={styles.navBrand}>
+      <nav className={`${styles.navbar} ${isScrolled ? styles.navbarScrolled : ''}`} id="navbar">
+        <a href="#hero" className={`${styles.navBrand} ${isScrolled ? styles.navBrandScrolled : ''}`}>
           <OpticsLogo size={22} />
           <span className={styles.brandName}>Optics</span>
         </a>
@@ -245,7 +245,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
           </li>
         </ul>
 
-        <div className={styles.navActions}>
+        <div className={`${styles.navActions} ${isScrolled ? styles.navActionsScrolled : ''}`}>
           {isAuthenticated ? (
             <button 
               type="button" 
