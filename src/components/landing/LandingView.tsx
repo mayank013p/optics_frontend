@@ -14,25 +14,28 @@ import {
   Lock, 
   CheckCircle2, 
   ChevronDown, 
-  ExternalLink,
-  Layers,
-  Activity,
-  GitBranch,
-  GitPullRequest,
-  CheckSquare,
-  Code2,
-  SlidersHorizontal,
-  Command,
-  Plus,
-  TrendingUp,
-  Sparkles,
-  Target
+  ExternalLink, 
+  Layers, 
+  Activity, 
+  GitBranch, 
+  GitPullRequest, 
+  CheckSquare, 
+  Code2, 
+  SlidersHorizontal, 
+  Command, 
+  Plus, 
+  TrendingUp, 
+  Sparkles, 
+  Target,
+  HelpCircle,
+  MessageSquare
 } from 'lucide-react';
 import styles from './LandingView.module.css';
 import FolderFloat from './FolderFloat';
 import WorkspaceSimulation from './WorkspaceSimulation';
 import MagicBento from './MagicBento';
 import OpticsLogo from '../brand/OpticsLogo';
+import Dock, { DockItemData } from '../dock/Dock';
 
 interface LandingViewProps {
   onOpenAuth: (mode?: 'login' | 'register') => void;
@@ -41,14 +44,144 @@ interface LandingViewProps {
 }
 
 export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingViewProps) {
-
-
   // FAQ Accordion Active Index
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('hero');
 
   const toggleFaq = (index: number) => {
     setActiveFaq(activeFaq === index ? null : index);
   };
+
+  // Scroll threshold listener (hides navbar links and reveals top floating dock)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (typeof window !== 'undefined') {
+        setIsScrolled(window.scrollY > 90);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Section observer to highlight active item in top dock
+  useEffect(() => {
+    const sections = ['hero', 'simulation', 'features', 'solutions', 'toolchain', 'analytics', 'faq'];
+    const observers: IntersectionObserver[] = [];
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setActiveSection(id);
+            }
+          });
+        },
+        { rootMargin: '-20% 0px -60% 0px' }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach((obs) => obs.disconnect());
+    };
+  }, []);
+
+  // Top Dock Navigation Items (Configured with Optics product capabilities & routes)
+  const dockItems: DockItemData[] = [
+    {
+      icon: <SlidersHorizontal className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Simulation',
+      active: activeSection === 'simulation',
+      onClick: () => {
+        const el = document.getElementById('simulation');
+        if (el) {
+          (window as any).lenis?.scrollTo(el, { offset: -80, duration: 1.2 }) ||
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
+    },
+    {
+      icon: <Layers className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Capabilities',
+      active: activeSection === 'features',
+      onClick: () => {
+        const el = document.getElementById('features');
+        if (el) {
+          (window as any).lenis?.scrollTo(el, { offset: -80, duration: 1.2 }) ||
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
+    },
+    {
+      icon: <GitPullRequest className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Comparison',
+      active: activeSection === 'solutions',
+      onClick: () => {
+        const el = document.getElementById('solutions');
+        if (el) {
+          (window as any).lenis?.scrollTo(el, { offset: -80, duration: 1.2 }) ||
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
+    },
+    {
+      icon: <Code2 className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Toolchain',
+      active: activeSection === 'toolchain',
+      onClick: () => {
+        const el = document.getElementById('toolchain');
+        if (el) {
+          (window as any).lenis?.scrollTo(el, { offset: -80, duration: 1.2 }) ||
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
+    },
+    {
+      icon: <TrendingUp className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Velocity',
+      active: activeSection === 'analytics',
+      onClick: () => {
+        const el = document.getElementById('analytics');
+        if (el) {
+          (window as any).lenis?.scrollTo(el, { offset: -80, duration: 1.2 }) ||
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
+    },
+    { separator: true },
+    {
+      icon: <ShieldCheck className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Security',
+      onClick: () => {
+        window.location.href = '/security';
+      },
+    },
+    {
+      icon: <HelpCircle className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'Support',
+      onClick: () => {
+        window.location.href = '/support';
+      },
+    },
+    {
+      icon: <MessageSquare className="w-4 h-4" strokeWidth={1.8} />,
+      label: 'FAQ',
+      active: activeSection === 'faq',
+      onClick: () => {
+        const el = document.getElementById('faq');
+        if (el) {
+          (window as any).lenis?.scrollTo(el, { offset: -80, duration: 1.2 }) ||
+            el.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
+    },
+  ];
 
   // Smooth scroll handler for incoming and current hash links (e.g. /#faq, #simulation)
   useEffect(() => {
@@ -83,8 +216,8 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
           <span className={styles.brandName}>Optics</span>
         </a>
 
-        {/* Product-Specific Navigation Links */}
-        <ul className={styles.navLinks}>
+        {/* Product-Specific Navigation Links (Only visible in hero section, smoothly hidden when scrolled) */}
+        <ul className={`${styles.navLinks} ${isScrolled ? styles.navLinksHidden : ''}`}>
           <li className={styles.navLinkItem}>
             <a href="#simulation" className={styles.navLink}>Simulation</a>
           </li>
@@ -146,6 +279,22 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
           )}
         </div>
       </nav>
+
+      {/* 1.1 Floating Top Dock (Appears when scrolled past hero section) */}
+      <div className={`${styles.floatingTopDock} ${isScrolled ? styles.floatingTopDockVisible : ''}`}>
+        <Dock
+          items={dockItems}
+          position="top"
+          theme="light"
+          baseItemSize={38}
+          magnification={52}
+          panelHeight={50}
+          gap={6}
+          roundness={0.6}
+          bounce={true}
+          showLabels={true}
+        />
+      </div>
 
       {/* 2. Hero Section (Divided into 2 columns with FolderFloat on right) */}
       <header className={styles.heroSection} id="hero">
