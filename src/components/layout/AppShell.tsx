@@ -134,7 +134,10 @@ export const AppShell: React.FC<AppShellProps> = ({ initialTab }) => {
         <Topbar />
         <NotificationPopover />
 
-        <main className={`flex-1 min-h-0 min-w-0 ${activeTab === 'board' || activeTab === 'docs' ? 'overflow-hidden flex flex-col' : 'overflow-y-auto'}`}>
+        <main 
+          data-lenis-prevent
+          className={`flex-1 min-h-0 min-w-0 ${activeTab === 'board' || activeTab === 'docs' ? 'overflow-hidden flex flex-col' : 'overflow-y-auto'}`}
+        >
           {activeTab === 'dashboard' && (
             <DashboardView
               projects={workspaceProjects}

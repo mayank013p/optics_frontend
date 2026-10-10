@@ -13,16 +13,45 @@ export const SmoothScrollProvider: React.FC<SmoothScrollProviderProps> = ({ chil
   const pathname = usePathname();
 
   useEffect(() => {
-    // Initialize Lenis with refined momentum and exponential deceleration
+    // Only enable Lenis on public marketing and legal pages to avoid hijacking internal app shell scrolling
+    const isMarketingPage = 
+      pathname === '/' || 
+      pathname === '/landing' || 
+      pathname === '/pricing' || 
+      pathname === '/privacy' || 
+      pathname === '/terms' || 
+      pathname === '/security' || 
+      pathname === '/support' || 
+      pathname === '/contact';
+
+    if (!isMarketingPage) {
+      if (lenisRef.current) {
+        lenisRef.current.destroy();
+        lenisRef.current = null;
+        delete (window as any).lenis;
+      }
+      return;
+    }
+
+    // Initialize Lenis with refined momentum and prevent nested scroll interference
     const lenis = new Lenis({
-      duration: 1.25,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
       wheelMultiplier: 1.0,
-      touchMultiplier: 1.6,
+      touchMultiplier: 1.5,
       infinite: false,
+      prevent: (node) => {
+        return (
+          node.hasAttribute('data-lenis-prevent') ||
+          node.closest('[data-lenis-prevent]') !== null ||
+          node.closest('main') !== null ||
+          node.closest('.overflow-y-auto') !== null ||
+          node.closest('.overflow-x-auto') !== null
+        );
+      },
     });
 
     lenisRef.current = lenis;
@@ -53,7 +82,7 @@ export const SmoothScrollProvider: React.FC<SmoothScrollProviderProps> = ({ chil
             e.preventDefault();
             lenis.scrollTo(el as HTMLElement, {
               offset: -80,
-              duration: 1.3,
+              duration: 1.2,
               easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             });
             window.history.pushState(null, '', hash);
