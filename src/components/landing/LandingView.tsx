@@ -57,7 +57,11 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
         const id = window.location.hash.substring(1);
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          if ((window as any).lenis) {
+            (window as any).lenis.scrollTo(element, { offset: -80, duration: 1.2 });
+          } else {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
         }
       }
     };

@@ -63,6 +63,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SmoothScrollProvider } from "@/components/common/SmoothScrollProvider";
+
 export default function RootLayout({
   children,
 }: {
@@ -92,7 +94,9 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col antialiased bg-[var(--bg-primary)] text-[var(--text-main)]">
-        {children}
+        <SmoothScrollProvider>
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );
