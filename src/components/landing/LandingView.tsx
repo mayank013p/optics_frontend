@@ -1081,8 +1081,8 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
             <div className={styles.faqLargeCardSwapWrapper}>
               <CardSwap
                 ref={faqCardSwapRef}
-                width={480}
-                height={360}
+                width={540}
+                height={430}
                 cardDistance={32}
                 verticalDistance={38}
                 depth={65}
