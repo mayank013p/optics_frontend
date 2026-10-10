@@ -235,6 +235,7 @@ function InviteAcceptForm() {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Elena Rostova"
                     className={styles.input}
+                    style={{ paddingLeft: '2.85rem' }}
                   />
                 </div>
               </div>
@@ -251,6 +252,7 @@ function InviteAcceptForm() {
                     disabled
                     value={invitation.email}
                     className={`${styles.input} ${styles.inputDisabled}`}
+                    style={{ paddingLeft: '2.85rem' }}
                   />
                 </div>
               </div>
@@ -270,6 +272,7 @@ function InviteAcceptForm() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Minimum 6 characters"
                       className={`${styles.input} ${styles.inputWithToggle}`}
+                      style={{ paddingLeft: '2.85rem', paddingRight: '2.85rem' }}
                     />
                     <button
                       type="button"

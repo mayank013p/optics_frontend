@@ -131,12 +131,14 @@
 
 .inputIcon {
   position: absolute;
-  left: 0.875rem;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   width: 1rem;
   height: 1rem;
   color: var(--text-dim, #78716c);
   pointer-events: none;
-  z-index: 2;
+  z-index: 10;
 }
 
 .input {
@@ -144,7 +146,7 @@
   background-color: var(--bg-secondary, #f3efea);
   border: 1px solid var(--border-color, #e6e1d6);
   border-radius: var(--radius-md, 0.625rem);
-  padding: 0.625rem 0.875rem 0.625rem 2.625rem;
+  padding: 0.65rem 0.875rem 0.65rem 2.85rem !important;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-main, #1c1917);
@@ -172,7 +174,7 @@
 }
 
 .inputWithToggle {
-  padding-right: 2.625rem;
+  padding-right: 2.85rem !important;
 }
 
 .eyeToggle {
