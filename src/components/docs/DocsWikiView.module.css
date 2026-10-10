@@ -689,15 +689,19 @@
 }
 
 .liveDocEditor a, .previewContainer a {
-  color: var(--accent-magenta, #0284c7);
-  text-decoration: none;
-  font-weight: 600;
-  border-bottom: 1px dashed rgba(2, 132, 199, 0.4);
+  color: var(--accent-magenta, #0284c7) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+  text-decoration-color: rgba(2, 132, 199, 0.45) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease;
+  word-break: break-all;
 }
 
 .liveDocEditor a:hover, .previewContainer a:hover {
-  border-bottom-style: solid;
-  color: var(--accent-magenta-hover, #0369a1);
+  color: var(--accent-magenta-hover, #0369a1) !important;
+  text-decoration-color: var(--accent-magenta-hover, #0369a1) !important;
 }
 
 .liveDocEditor hr, .previewContainer hr {

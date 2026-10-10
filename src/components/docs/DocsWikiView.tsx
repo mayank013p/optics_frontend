@@ -136,7 +136,7 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       /(^|\n)(#{1,6}\s|>|\d+\.\s|[-*]\s|```|---)/m.test(input) ||
       /(\*\*[^*]+\*\*|\*[^*]+\*|__[^_]+__|~~[^~]+~~|`[^`]+`|\[[^\]]+\]\(https?:\/\/[^\s)]+\))/.test(input);
 
-    if (!hasRawMarkdownSyntax && /<(p|h[1-6]|ul|ol|li|blockquote|div|pre|code|table|span|mark|strong|em|u|del)[^>]*>/i.test(input)) {
+    if (!hasRawMarkdownSyntax && /<(p|h[1-6]|ul|ol|li|blockquote|div|pre|code|table|span|mark|strong|em|u|del|a)[^>]*>/i.test(input)) {
       return input;
     }
 
@@ -160,6 +160,11 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
       formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
       // Links [text](url)
       formatted = formatted.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      // Auto-detect standalone URLs not already in markdown links
+      formatted = formatted.replace(/(^|[\s(])((https?:\/\/|www\.)[^\s<)]+)/gi, (match, prefix, url) => {
+        const href = url.startsWith('www.') ? `https://${url}` : url;
+        return `${prefix}<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+      });
       return formatted;
     };
 
@@ -1254,7 +1259,12 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                 <div className={styles.modeSwitcher}>
                   <button
                     type="button"
-                    onClick={() => setPreviewMode(false)}
+                    onClick={() => {
+                      setPreviewMode(false);
+                      if (editorRef.current && (!editorRef.current.innerHTML || editorRef.current.innerHTML === '<p><br></p>') && editorHtml) {
+                        editorRef.current.innerHTML = editorHtml;
+                      }
+                    }}
                     className={`${styles.modeBtn} ${!previewMode ? styles.modeBtnActive : ''}`}
                   >
                     <Edit3 className="w-3 h-3" />
@@ -1262,7 +1272,14 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   </button>
                   <button
                     type="button"
-                    onClick={() => setPreviewMode(true)}
+                    onClick={() => {
+                      if (editorRef.current) {
+                        const currentHtml = editorRef.current.innerHTML;
+                        setEditorHtml(currentHtml);
+                        setDocContent(currentHtml);
+                      }
+                      setPreviewMode(true);
+                    }}
                     className={`${styles.modeBtn} ${previewMode ? styles.modeBtnActive : ''}`}
                   >
                     <Eye className="w-3 h-3" />
@@ -1491,26 +1508,33 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
                   <span>{readingTime}</span>
                 </div>
 
-                {/* Live Rich WYSIWYG Document Editor or Rendered View */}
-                {!previewMode ? (
-                  <div
-                    ref={editorRef}
-                    contentEditable={can('doc.create')}
-                    onInput={handleEditorInput}
-                    onKeyDown={handleEditorKeyDown}
-                    onPaste={handleEditorPaste}
-                    onKeyUp={updateToolbarActiveState}
-                    onMouseUp={updateToolbarActiveState}
-                    onBlur={handleSave}
-                    className={styles.liveDocEditor}
-                    data-placeholder="Start typing your document, specs, or meeting notes here..."
-                    suppressContentEditableWarning
-                  />
-                ) : (
+                {/* Live Rich WYSIWYG Document Editor (Always mounted so text & history are never lost) */}
+                <div
+                  ref={editorRef}
+                  contentEditable={can('doc.create')}
+                  onInput={handleEditorInput}
+                  onKeyDown={handleEditorKeyDown}
+                  onPaste={handleEditorPaste}
+                  onKeyUp={updateToolbarActiveState}
+                  onMouseUp={updateToolbarActiveState}
+                  onBlur={handleSave}
+                  className={styles.liveDocEditor}
+                  style={{ display: previewMode ? 'none' : 'block' }}
+                  data-placeholder="Start typing your document, specs, or meeting notes here..."
+                  suppressContentEditableWarning
+                />
+
+                {/* Rendered Preview View */}
+                {previewMode && (
                   <div 
                     className={styles.previewContainer}
                     onDoubleClick={() => {
-                      if (can('doc.create')) setPreviewMode(false);
+                      if (can('doc.create')) {
+                        setPreviewMode(false);
+                        if (editorRef.current && (!editorRef.current.innerHTML || editorRef.current.innerHTML === '<p><br></p>') && editorHtml) {
+                          editorRef.current.innerHTML = editorHtml;
+                        }
+                      }
                     }}
                     dangerouslySetInnerHTML={{ __html: editorHtml || markdownToHtml(docContent) }}
                     title={can('doc.create') ? "Double-click to edit document" : undefined}
