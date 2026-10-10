@@ -162,10 +162,22 @@
   transition: opacity 0.16s ease, transform 0.16s ease;
 }
 
+.dock--bottom .dock-label {
+  top: auto;
+  bottom: calc(100% + 10px);
+  transform: translate(-50%, 4px);
+}
+
+.dock--top .dock-label {
+  top: calc(100% + 10px);
+  bottom: auto;
+  transform: translate(-50%, -4px);
+}
+
 @media (hover: hover) {
   .dock-item:hover .dock-label {
     opacity: 1;
-    transform: translate(-50%, 0);
+    transform: translate(-50%, 0) !important;
   }
 }
 

@@ -210,8 +210,8 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
   return (
     <div className={styles.landingWrapper} data-theme="cream">
       {/* 1. Header & Navigation (Fixed top, product-focused navigation) */}
-      <nav className={`${styles.navbar} ${isScrolled ? styles.navbarScrolled : ''}`} id="navbar">
-        <a href="#hero" className={`${styles.navBrand} ${isScrolled ? styles.navBrandScrolled : ''}`}>
+      <nav className={styles.navbar} id="navbar">
+        <a href="#hero" className={styles.navBrand}>
           <OpticsLogo size={22} />
           <span className={styles.brandName}>Optics</span>
         </a>
@@ -245,7 +245,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
           </li>
         </ul>
 
-        <div className={`${styles.navActions} ${isScrolled ? styles.navActionsScrolled : ''}`}>
+        <div className={styles.navActions}>
           {isAuthenticated ? (
             <button 
               type="button" 
@@ -280,15 +280,15 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
         </div>
       </nav>
 
-      {/* 1.1 Floating Top Dock (Appears when scrolled past hero section) */}
-      <div className={`${styles.floatingTopDock} ${isScrolled ? styles.floatingTopDockVisible : ''}`}>
+      {/* 1.1 Floating Bottom Dock (Appears when scrolled past hero section) */}
+      <div className={`${styles.floatingBottomDock} ${isScrolled ? styles.floatingBottomDockVisible : ''}`}>
         <Dock
           items={dockItems}
-          position="top"
+          position="bottom"
           theme="light"
           baseItemSize={48}
-          magnification={58}
-          panelHeight={60}
+          magnification={60}
+          panelHeight={62}
           gap={8}
           roundness={0.5}
           bounce={true}
