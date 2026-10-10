@@ -211,7 +211,6 @@ import { useOptics } from '../../context/OpticsContext';
 import { api } from '../../lib/api';
 import { getCache, setCache } from '../../lib/cache';
 import { RBACSkeleton } from '../common/Skeleton';
-import { FREE_PLAN_LIMITS } from '../../lib/planLimits';
 
 export const RBACSettingsView: React.FC = () => {
   const { 
@@ -699,24 +698,6 @@ export const RBACSettingsView: React.FC = () => {
             </div>
 
             <form onSubmit={handleCreateRoleSubmit} className="flex flex-col gap-4">
-              {roles.length >= FREE_PLAN_LIMITS.maxRoles && (
-                <div
-                  className="p-3 rounded-xl border flex flex-col gap-1.5 text-xs"
-                  style={{
-                    backgroundColor: 'rgba(245, 158, 11, 0.08)',
-                    borderColor: 'rgba(245, 158, 11, 0.25)',
-                    color: 'var(--text-main)',
-                  }}
-                >
-                  <span className="font-bold flex items-center gap-1.5" style={{ color: 'var(--accent-amber, #b45309)' }}>
-                    Role Limit Reached ({roles.length}/{FREE_PLAN_LIMITS.maxRoles})
-                  </span>
-                  <span style={{ color: 'var(--text-muted)' }}>
-                    The Free Plan allows up to 12 custom granular roles. Upgrade to Optics Pro for unlimited custom roles.
-                  </span>
-                </div>
-              )}
-
               <div>
                 <label className="text-xs font-bold uppercase tracking-wider block mb-1" style={{ color: 'var(--text-muted)' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem' }}>
@@ -727,12 +708,12 @@ export const RBACSettingsView: React.FC = () => {
                 <input
                   type="text"
                   required
-                  disabled={isSaving || roles.length >= FREE_PLAN_LIMITS.maxRoles}
+                  disabled={isSaving}
                   value={newRoleName}
                   onChange={(e) => setNewRoleName(e.target.value)}
                   placeholder="e.g. QA Lead / Release Manager"
                   className={styles.input}
-                  autoFocus={roles.length < FREE_PLAN_LIMITS.maxRoles}
+                  autoFocus
                 />
               </div>
 
@@ -744,7 +725,7 @@ export const RBACSettingsView: React.FC = () => {
                   </span>
                 </label>
                 <select
-                  disabled={isSaving || roles.length >= FREE_PLAN_LIMITS.maxRoles}
+                  disabled={isSaving}
                   value={newRoleLevel}
                   onChange={(e) => setNewRoleLevel(e.target.value)}
                   className={styles.select}
@@ -766,14 +747,10 @@ export const RBACSettingsView: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={isSaving || roles.length >= FREE_PLAN_LIMITS.maxRoles || !newRoleName.trim()}
+                  disabled={isSaving || !newRoleName.trim()}
                   className={styles.primaryBtn}
-                  style={{
-                    opacity: roles.length >= FREE_PLAN_LIMITS.maxRoles ? 0.6 : 1,
-                    cursor: roles.length >= FREE_PLAN_LIMITS.maxRoles ? 'not-allowed' : 'pointer',
-                  }}
                 >
-                  {roles.length >= FREE_PLAN_LIMITS.maxRoles ? 'Limit Reached (12/12)' : isSaving ? 'Creating...' : 'Create Role'}
+                  {isSaving ? 'Creating...' : 'Create Role'}
                 </button>
               </div>
             </form>

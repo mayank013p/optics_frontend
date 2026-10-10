@@ -1,49 +1,24 @@
 export const FREE_PLAN_LIMITS = {
-  maxWorkspaces: 1,
-  maxProjectsPerWorkspace: 5,
-  maxTotalProjects: 5,
-  maxRoles: 12,
-  maxDocsPerWorkspace: 10,
-  maxTeamMembers: Infinity, // Unlimited team members on free tier
+  maxWorkspaces: Infinity,
+  maxProjectsPerWorkspace: Infinity,
+  maxTotalProjects: Infinity,
+  maxRoles: Infinity,
+  maxDocsPerWorkspace: Infinity,
+  maxTeamMembers: Infinity,
 };
 
-export function checkWorkspaceLimit(currentCount: number): { allowed: boolean; message?: string } {
-  if (currentCount >= FREE_PLAN_LIMITS.maxWorkspaces) {
-    return {
-      allowed: false,
-      message: `Free plan is limited to ${FREE_PLAN_LIMITS.maxWorkspaces} workspace (${currentCount}/${FREE_PLAN_LIMITS.maxWorkspaces} used). Upgrade to Pro for unlimited workspaces.`,
-    };
-  }
+export function checkWorkspaceLimit(_currentCount?: number): { allowed: boolean; message?: string } {
   return { allowed: true };
 }
 
-export function checkProjectLimit(currentCount: number): { allowed: boolean; message?: string } {
-  if (currentCount >= FREE_PLAN_LIMITS.maxProjectsPerWorkspace) {
-    return {
-      allowed: false,
-      message: `Free plan is limited to ${FREE_PLAN_LIMITS.maxProjectsPerWorkspace} projects per workspace (${currentCount}/${FREE_PLAN_LIMITS.maxProjectsPerWorkspace} used). Upgrade to Pro for unlimited projects.`,
-    };
-  }
+export function checkProjectLimit(_currentCount?: number): { allowed: boolean; message?: string } {
   return { allowed: true };
 }
 
-export function checkRoleLimit(currentCount: number): { allowed: boolean; message?: string } {
-  if (currentCount >= FREE_PLAN_LIMITS.maxRoles) {
-    return {
-      allowed: false,
-      message: `Free plan is limited to ${FREE_PLAN_LIMITS.maxRoles} roles (${currentCount}/${FREE_PLAN_LIMITS.maxRoles} used). Upgrade to Pro for unlimited custom roles.`,
-    };
-  }
+export function checkRoleLimit(_currentCount?: number): { allowed: boolean; message?: string } {
   return { allowed: true };
 }
 
-export function checkDocLimit(currentCount: number): { allowed: boolean; message?: string } {
-  if (currentCount >= FREE_PLAN_LIMITS.maxDocsPerWorkspace) {
-    return {
-      allowed: false,
-      message: `Free plan is limited to ${FREE_PLAN_LIMITS.maxDocsPerWorkspace} docs per space (${currentCount}/${FREE_PLAN_LIMITS.maxDocsPerWorkspace} used). Upgrade to Pro for unlimited wiki docs.`,
-    };
-  }
+export function checkDocLimit(_currentCount?: number): { allowed: boolean; message?: string } {
   return { allowed: true };
 }
-

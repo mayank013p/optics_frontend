@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, FolderPlus, Key, AlignLeft, Palette, Type, Layers, AlertTriangle, Sparkles } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useOptics } from '../../context/OpticsContext';
-import { FREE_PLAN_LIMITS } from '../../lib/planLimits';
 import styles from './CreateProjectModal.module.css';
 
 interface CreateProjectModalProps {
@@ -17,7 +16,7 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   onClose,
   onCreateProject,
 }) => {
-  const { workspaces, activeWorkspace, projects, can } = useOptics();
+  const { workspaces, activeWorkspace, can } = useOptics();
 
   const [name, setName] = useState('');
   const [key, setKey] = useState('');
@@ -35,9 +34,6 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
   if (!isOpen || !can('project.create')) return null;
 
-  const currentProjectCount = projects.length;
-  const isLimitReached = currentProjectCount >= FREE_PLAN_LIMITS.maxTotalProjects;
-
   const handleNameChange = (val: string) => {
     setName(val);
     if (!key || key.length <= 4) {
@@ -51,7 +47,6 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLimitReached) return;
     if (!name.trim() || !key.trim()) return;
 
     onCreateProject({
@@ -83,37 +78,11 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          {isLimitReached && (
-            <div className={styles.limitBanner}>
-              <div className={styles.limitBannerHeader}>
-                <Sparkles className="w-4 h-4 flex-shrink-0" />
-                <span>Free Plan Project Limit Reached ({currentProjectCount}/{FREE_PLAN_LIMITS.maxTotalProjects})</span>
-              </div>
-              <p className={styles.limitBannerText}>
-                The <strong>Free Plan</strong> allows up to <strong>5 Projects</strong> per workspace. Upgrade to Optics Pro to unlock unlimited projects, cross-project views, and extended history.
-              </p>
-              <div className={styles.limitBannerActions}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose();
-                    window.location.href = '/pricing';
-                  }}
-                  className={styles.limitBannerBtn}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Upgrade to Pro</span>
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Parent Workspace Selector */}
           <div className={styles.fieldGroup}>
             <label className={styles.fieldLabel}>Target Parent Workspace *</label>
             <select
               value={selectedWorkspaceId}
-              disabled={isLimitReached}
               onChange={(e) => setSelectedWorkspaceId(e.target.value)}
               className={styles.select}
               required
@@ -135,12 +104,11 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <input
               type="text"
               required
-              disabled={isLimitReached}
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="e.g. Connexon Mobile, Optics Platform"
               className={styles.input}
-              autoFocus={!isLimitReached}
+              autoFocus
             />
           </div>
 
@@ -149,7 +117,6 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <input
               type="text"
               required
-              disabled={isLimitReached}
               maxLength={6}
               value={key}
               onChange={(e) => setKey(e.target.value.toUpperCase())}
@@ -163,7 +130,6 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             <label className={styles.fieldLabel}>Description</label>
             <textarea
               rows={2}
-              disabled={isLimitReached}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Primary engineering scope, release goals..."
@@ -179,10 +145,9 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
                 <button
                   key={c}
                   type="button"
-                  disabled={isLimitReached}
                   onClick={() => setColor(c)}
                   className={`${styles.colorBtn} ${color === c ? styles.colorBtnActive : ''}`}
-                  style={{ backgroundColor: c, opacity: isLimitReached ? 0.5 : 1 }}
+                  style={{ backgroundColor: c }}
                   aria-label={`Select color ${c}`}
                 />
               ))}
@@ -195,14 +160,10 @@ export const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
             </button>
             <button
               type="submit"
-              disabled={isLimitReached || !name.trim() || !key.trim()}
+              disabled={!name.trim() || !key.trim()}
               className={styles.submitBtn}
-              style={{
-                opacity: isLimitReached ? 0.6 : 1,
-                cursor: isLimitReached ? 'not-allowed' : 'pointer',
-              }}
             >
-              <span>{isLimitReached ? `Limit Reached (${currentProjectCount}/${FREE_PLAN_LIMITS.maxTotalProjects})` : 'Create Project'}</span>
+              <span>Create Project</span>
             </button>
           </div>
         </form>

@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, FileText, Plus, BookOpen, Layers, Type, Layout, AlertCircle, Sparkles } from 'lucide-react';
+import { X, FileText, Plus, BookOpen, Layers } from 'lucide-react';
 import { useOptics } from '../../context/OpticsContext';
-import { checkDocLimit, FREE_PLAN_LIMITS } from '../../lib/planLimits';
 import styles from './CreateDocModal.module.css';
 
 interface CreateDocModalProps {
@@ -17,17 +16,15 @@ export const CreateDocModal: React.FC<CreateDocModalProps> = ({
   onClose,
   onCreateDoc,
 }) => {
-  const { can, documents } = useOptics();
+  const { can } = useOptics();
   const [title, setTitle] = useState('');
   const [template, setTemplate] = useState('specs');
-
-  const docLimit = checkDocLimit(documents.length);
 
   if (!isOpen || !can('doc.create')) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim() || !docLimit.allowed) return;
+    if (!title.trim()) return;
     onCreateDoc(title.trim(), template);
     setTitle('');
     onClose();
@@ -52,33 +49,11 @@ export const CreateDocModal: React.FC<CreateDocModalProps> = ({
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          {!docLimit.allowed && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '0.625rem',
-              padding: '0.75rem',
-              borderRadius: 'var(--radius-md)',
-              backgroundColor: 'rgba(239, 68, 68, 0.08)',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
-              color: '#dc2626',
-              fontSize: '0.75rem',
-              lineHeight: 1.45,
-            }}>
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <div>
-                <div style={{ fontWeight: 700, marginBottom: '0.125rem' }}>Free Plan Limit Reached</div>
-                <div>{docLimit.message}</div>
-              </div>
-            </div>
-          )}
-
           <div className={styles.fieldGroup}>
             <label className={styles.fieldLabel}>Document Title *</label>
             <input
               type="text"
               required
-              disabled={!docLimit.allowed}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Architecture RFC & API Schemas"
@@ -97,7 +72,6 @@ export const CreateDocModal: React.FC<CreateDocModalProps> = ({
                   <button
                     key={t.id}
                     type="button"
-                    disabled={!docLimit.allowed}
                     onClick={() => setTemplate(t.id)}
                     className={`${styles.templateOption} ${isSelected ? styles.templateOptionSelected : ''}`}
                   >
@@ -115,12 +89,7 @@ export const CreateDocModal: React.FC<CreateDocModalProps> = ({
             </button>
             <button 
               type="submit" 
-              disabled={!docLimit.allowed} 
               className={styles.submitBtn}
-              style={{
-                opacity: !docLimit.allowed ? 0.5 : 1,
-                cursor: !docLimit.allowed ? 'not-allowed' : 'pointer'
-              }}
             >
               <Plus className="w-3.5 h-3.5" strokeWidth={2.2} />
               <span>Create Document</span>

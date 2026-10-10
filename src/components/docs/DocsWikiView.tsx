@@ -39,7 +39,6 @@ import {
 } from 'lucide-react';
 import { Document } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
-import { FREE_PLAN_LIMITS } from '../../lib/planLimits';
 import { DocsSkeleton } from '../common/Skeleton';
 import styles from './DocsWikiView.module.css';
 
@@ -1094,24 +1093,13 @@ export const DocsWikiView: React.FC<DocsWikiViewProps> = ({
               <span className={styles.sidebarHeadingText}>
                 {activeProject?.name ? `${activeProject.key} Wiki` : 'Project Wiki'}
               </span>
-              <span style={{
-                fontSize: '0.625rem',
-                fontWeight: 700,
-                padding: '0.125rem 0.375rem',
-                borderRadius: '9999px',
-                backgroundColor: projectDocs.length >= FREE_PLAN_LIMITS.maxDocsPerWorkspace ? 'rgba(239, 68, 68, 0.12)' : 'var(--bg-badge)',
-                color: projectDocs.length >= FREE_PLAN_LIMITS.maxDocsPerWorkspace ? '#dc2626' : 'var(--text-muted)',
-                border: '1px solid var(--border-color)',
-              }}>
-                {projectDocs.length}/{FREE_PLAN_LIMITS.maxDocsPerWorkspace}
-              </span>
             </div>
             {can('doc.create') && (
               <button
                 type="button"
                 onClick={onOpenCreateDoc}
                 className={styles.iconBtn}
-                title={projectDocs.length >= FREE_PLAN_LIMITS.maxDocsPerWorkspace ? "Free plan doc limit reached (10/10)" : "New Document"}
+                title="New Document"
               >
                 <Plus className="w-4 h-4" />
               </button>

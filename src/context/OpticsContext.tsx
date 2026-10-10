@@ -20,7 +20,6 @@ import {
 import { api, getAuthToken, setAuthToken, clearAuthToken, getStoredUser, setStoredUser, ApiError } from '../lib/api';
 import { getCache, setCache, clearAllOpticsCache } from '../lib/cache';
 import { ENV } from '../lib/config';
-import { FREE_PLAN_LIMITS } from '../lib/planLimits';
 import { io as socketIO, Socket } from 'socket.io-client';
 
 const PERMISSION_ALIASES: Record<string, string[]> = {
@@ -1402,10 +1401,6 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // 7. Create Project (0ms Instant UI + Cache Update)
   const handleCreateProject = async (data: { name: string; key: string; description: string; color: string; workspaceId?: string }) => {
-    if (projects.length >= FREE_PLAN_LIMITS.maxTotalProjects) {
-      console.warn(`[PlanLimit] Project limit of ${FREE_PLAN_LIMITS.maxTotalProjects} reached on Free Plan.`);
-      return;
-    }
     const tempProjId = `proj-temp-${Date.now()}`;
     const defaultBoardId = `board-temp-${Date.now()}`;
     
@@ -1482,10 +1477,6 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Workspace Handlers
   const handleCreateWorkspace = async (data: { name: string; description?: string }) => {
-    if (workspaces.length >= FREE_PLAN_LIMITS.maxWorkspaces) {
-      console.warn(`[PlanLimit] Workspace limit of ${FREE_PLAN_LIMITS.maxWorkspaces} reached on Free Plan.`);
-      return;
-    }
     const tempWsId = `ws-temp-${Date.now()}`;
     const optimisticWs: Workspace = {
       id: tempWsId,
@@ -1557,11 +1548,6 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     if (!can('doc.create')) {
       console.warn('Action blocked: doc.create capability is disabled for your role.');
-      return;
-    }
-
-    if (documents.length >= FREE_PLAN_LIMITS.maxDocsPerWorkspace) {
-      console.warn(`[PlanLimit] Doc limit of ${FREE_PLAN_LIMITS.maxDocsPerWorkspace} reached on Free Plan.`);
       return;
     }
 
@@ -1742,10 +1728,6 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // 15. RBAC Handlers
   const handleCreateRole = async (data: { name: string; description?: string; permissionCodes?: string[] }) => {
-    if (rbacRoles.length >= FREE_PLAN_LIMITS.maxRoles) {
-      console.warn(`[PlanLimit] Role limit of ${FREE_PLAN_LIMITS.maxRoles} reached on Free Plan.`);
-      return;
-    }
     await api.rbac.createRole(data);
   };
 
