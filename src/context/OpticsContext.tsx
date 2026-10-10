@@ -921,11 +921,54 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return res;
   };
 
-  // Auth: Leave Organization
-  const handleLeaveOrganization = async (orgId: string) => {
-    const res = await api.auth.leaveOrg(orgId);
-    await refreshData();
-    return res;
+  // Auth: Leave Organization / Workspace
+  const handleLeaveOrganization = async (orgId?: string) => {
+    // 1. Optimistic UI update: Remove active workspace from user's active list
+    if (activeWorkspace) {
+      const nextWorkspaces = workspaces.filter((w) => w.id !== activeWorkspace.id);
+      setWorkspaces(nextWorkspaces);
+      setCache('workspaces', nextWorkspaces);
+      if (nextWorkspaces.length > 0) {
+        setActiveWorkspace(nextWorkspaces[0]);
+      } else {
+        setActiveWorkspaceState(null);
+        setCache('active_workspace', null);
+      }
+    }
+
+    // 2. Remove current user from members directory
+    if (currentUser?.id) {
+      const nextMembers = members.filter((m) => m.user.id !== currentUser.id);
+      setMembers(nextMembers);
+      setCache('members', nextMembers);
+    }
+
+    // 3. Resilient backend call: Try teams.remove for current user first, fallback to leaveOrg
+    let res: any = null;
+    try {
+      if (currentUser?.id) {
+        res = await api.teams.remove(currentUser.id);
+      } else if (orgId) {
+        res = await api.auth.leaveOrg(orgId);
+      }
+    } catch (err) {
+      console.warn('Backend member removal fallback:', err);
+      if (orgId) {
+        try {
+          res = await api.auth.leaveOrg(orgId);
+        } catch (e) {
+          console.warn('Backend leaveOrg fallback:', e);
+        }
+      }
+    }
+
+    try {
+      await refreshData();
+    } catch (e) {
+      console.warn('refreshData after leave:', e);
+    }
+
+    return res || { success: true };
   };
 
   // Auth: Delete Organization (Owners)

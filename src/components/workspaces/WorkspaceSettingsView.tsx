@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { useOptics } from '../../context/OpticsContext';
 import { WorkspacesSkeleton } from '../common/Skeleton';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 import styles from './WorkspaceSettingsView.module.css';
 
 export const WorkspaceSettingsView: React.FC = () => {
@@ -42,6 +43,9 @@ export const WorkspaceSettingsView: React.FC = () => {
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [copiedSlug, setCopiedSlug] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (activeWorkspace) {
@@ -401,20 +405,7 @@ export const WorkspaceSettingsView: React.FC = () => {
 
           <button
             type="button"
-            onClick={async () => {
-              if (!activeWorkspace) return;
-              if (
-                confirm(
-                  `Are you sure you want to leave "${activeWorkspace.name}"? You will lose access until an administrator invites you back.`
-                )
-              ) {
-                try {
-                  await handleLeaveOrganization(activeWorkspace.organizationId || activeWorkspace.id || 'default-org');
-                } catch (err: any) {
-                  alert(err.message || 'Failed to leave workspace');
-                }
-              }
-            }}
+            onClick={() => setIsLeaveModalOpen(true)}
             className={styles.leaveBtn}
           >
             <LogOut className="w-3.5 h-3.5" />
@@ -438,12 +429,7 @@ export const WorkspaceSettingsView: React.FC = () => {
             <button
               type="button"
               disabled={workspaces.length <= 1}
-              onClick={() => {
-                if (!activeWorkspace) return;
-                if (confirm(`Are you sure you want to delete "${activeWorkspace.name}"? This cannot be undone.`)) {
-                  handleDeleteWorkspace(activeWorkspace.id);
-                }
-              }}
+              onClick={() => setIsDeleteModalOpen(true)}
               className={styles.dangerBtn}
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -452,6 +438,58 @@ export const WorkspaceSettingsView: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for Leaving Workspace */}
+      <ConfirmationModal
+        isOpen={isLeaveModalOpen}
+        onClose={() => setIsLeaveModalOpen(false)}
+        title={`Leave ${activeWorkspace?.name || 'Workspace'}?`}
+        message={`You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`}
+        confirmText="Yes, Leave Workspace"
+        cancelText="Cancel"
+        variant="danger"
+        iconType="logout"
+        isLoading={isProcessing}
+        onConfirm={async () => {
+          if (!activeWorkspace) return;
+          try {
+            setIsProcessing(true);
+            await handleLeaveOrganization(activeWorkspace.organizationId || activeWorkspace.id || 'default-org');
+            setIsLeaveModalOpen(false);
+          } catch (err: any) {
+            console.error('Leave workspace error:', err);
+            setIsLeaveModalOpen(false);
+          } finally {
+            setIsProcessing(false);
+          }
+        }}
+      />
+
+      {/* Confirmation Modal for Deleting Workspace */}
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title={`Delete "${activeWorkspace?.name}"?`}
+        message={`This will permanently delete "${activeWorkspace?.name}" and all associated data. This action cannot be undone.`}
+        confirmText="Delete Workspace"
+        cancelText="Cancel"
+        variant="danger"
+        iconType="delete"
+        isLoading={isProcessing}
+        onConfirm={async () => {
+          if (!activeWorkspace) return;
+          try {
+            setIsProcessing(true);
+            await handleDeleteWorkspace(activeWorkspace.id);
+            setIsDeleteModalOpen(false);
+          } catch (err: any) {
+            console.error('Delete workspace error:', err);
+            setIsDeleteModalOpen(false);
+          } finally {
+            setIsProcessing(false);
+          }
+        }}
+      />
     </div>
   );
 };

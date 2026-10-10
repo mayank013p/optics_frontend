@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useOptics } from '../../context/OpticsContext';
 import { ProfileSkeleton } from '../common/Skeleton';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 import styles from './ProfileView.module.css';
 
 export const ProfileView: React.FC = () => {
@@ -55,6 +56,8 @@ export const ProfileView: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
@@ -517,22 +520,7 @@ export const ProfileView: React.FC = () => {
 
             <button
               type="button"
-              onClick={async () => {
-                if (!activeWorkspace) return;
-                if (
-                  confirm(
-                    `Are you sure you want to leave "${activeWorkspace.name}"? You will lose access until an administrator invites you back.`
-                  )
-                ) {
-                  try {
-                    await handleLeaveOrganization(
-                      activeWorkspace.organizationId || activeWorkspace.id || 'default-org'
-                    );
-                  } catch (err: any) {
-                    alert(err.message || 'Failed to leave workspace');
-                  }
-                }
-              }}
+              onClick={() => setIsLeaveModalOpen(true)}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-rose-500 hover:text-white hover:bg-rose-500"
               style={{ backgroundColor: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)' }}
             >
@@ -541,6 +529,34 @@ export const ProfileView: React.FC = () => {
             </button>
           </div>
         </section>
+
+        {/* Confirmation Modal for Leaving Workspace */}
+        <ConfirmationModal
+          isOpen={isLeaveModalOpen}
+          onClose={() => setIsLeaveModalOpen(false)}
+          title={`Leave ${activeWorkspace?.name || 'Workspace'}?`}
+          message={`You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`}
+          confirmText="Yes, Leave Workspace"
+          cancelText="Cancel"
+          variant="danger"
+          iconType="logout"
+          isLoading={isProcessing}
+          onConfirm={async () => {
+            if (!activeWorkspace) return;
+            try {
+              setIsProcessing(true);
+              await handleLeaveOrganization(
+                activeWorkspace.organizationId || activeWorkspace.id || 'default-org'
+              );
+              setIsLeaveModalOpen(false);
+            } catch (err: any) {
+              console.error('Leave workspace error:', err);
+              setIsLeaveModalOpen(false);
+            } finally {
+              setIsProcessing(false);
+            }
+          }}
+        />
       </div>
     </div>
   );

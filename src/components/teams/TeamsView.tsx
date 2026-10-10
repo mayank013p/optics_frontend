@@ -5,6 +5,7 @@ import { Users, UserPlus, Shield, CheckCircle2, Search, Mail, Trash2, LogOut } f
 import { User } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
 import { TeamsSkeleton, EmptyState } from '../common/Skeleton';
+import { ConfirmationModal } from '../common/ConfirmationModal';
 import styles from './TeamsView.module.css';
 
 interface MemberItem {
@@ -33,6 +34,9 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('ALL');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<MemberItem | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -323,21 +327,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       {isSelf && !isOwner ? (
                         <button
                           type="button"
-                          onClick={async () => {
-                            if (
-                              confirm(
-                                `Are you sure you want to leave ${activeWorkspace?.name || 'this workspace'}? An admin can re-invite you anytime.`
-                              )
-                            ) {
-                              try {
-                                await handleLeaveOrganization(
-                                  activeWorkspace?.organizationId || activeWorkspace?.id || 'default-org'
-                                );
-                              } catch (err: any) {
-                                alert(err.message || 'Failed to leave workspace');
-                              }
-                            }
-                          }}
+                          onClick={() => setIsLeaveModalOpen(true)}
                           className={styles.leaveBtn}
                           title="Leave Workspace"
                         >
@@ -357,12 +347,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                           {onRemoveMember && !isOwner && !isSelf && (isAdmin || can('user.delete') || can('user.manage')) && (
                             <button
                               type="button"
-                              onClick={() => {
-                                if (confirm(`Remove ${m.user.name} from this organization?`)) {
-                                  onRemoveMember(m.user.id);
-                                  showToast(`Removed ${m.user.name}`);
-                                }
-                              }}
+                              onClick={() => setMemberToRemove(m)}
                               className={styles.deleteBtn}
                               title="Remove Member"
                             >
@@ -388,6 +373,60 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
           </tbody>
         </table>
       </div>
+
+      {/* Confirmation Modal for Leaving Workspace */}
+      <ConfirmationModal
+        isOpen={isLeaveModalOpen}
+        onClose={() => setIsLeaveModalOpen(false)}
+        title={`Leave ${activeWorkspace?.name || 'Workspace'}?`}
+        message={`You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`}
+        confirmText="Yes, Leave Workspace"
+        cancelText="Cancel"
+        variant="danger"
+        iconType="logout"
+        isLoading={isProcessing}
+        onConfirm={async () => {
+          try {
+            setIsProcessing(true);
+            await handleLeaveOrganization(
+              activeWorkspace?.organizationId || activeWorkspace?.id || 'default-org'
+            );
+            setIsLeaveModalOpen(false);
+          } catch (err: any) {
+            console.error('Leave workspace error:', err);
+            setIsLeaveModalOpen(false);
+          } finally {
+            setIsProcessing(false);
+          }
+        }}
+      />
+
+      {/* Confirmation Modal for Removing Member */}
+      <ConfirmationModal
+        isOpen={!!memberToRemove}
+        onClose={() => setMemberToRemove(null)}
+        title={`Remove ${memberToRemove?.user.name}?`}
+        message={`Are you sure you want to remove ${memberToRemove?.user.name} (${memberToRemove?.user.email}) from this workspace? You can re-invite them at any time.`}
+        confirmText="Remove Member"
+        cancelText="Cancel"
+        variant="danger"
+        iconType="delete"
+        isLoading={isProcessing}
+        onConfirm={async () => {
+          if (!memberToRemove || !onRemoveMember) return;
+          try {
+            setIsProcessing(true);
+            onRemoveMember(memberToRemove.user.id);
+            showToast(`Removed ${memberToRemove.user.name}`);
+            setMemberToRemove(null);
+          } catch (err: any) {
+            console.error('Remove member error:', err);
+            setMemberToRemove(null);
+          } finally {
+            setIsProcessing(false);
+          }
+        }}
+      />
     </div>
   );
 };
