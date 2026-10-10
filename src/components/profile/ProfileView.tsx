@@ -40,6 +40,7 @@ export const ProfileView: React.FC = () => {
     handleUpdateProfile,
     handleUpdatePassword,
     handleLeaveOrganization,
+    isOrgOwner,
     authLoading
   } = useOptics();
 
@@ -57,6 +58,7 @@ export const ProfileView: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [leaveError, setLeaveError] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -513,16 +515,23 @@ export const ProfileView: React.FC = () => {
               <div>
                 <div className="font-bold text-sm text-main">{activeWorkspace?.name || 'Primary Workspace'}</div>
                 <div className="text-xs text-muted">
-                  Member access • You can be re-invited by workspace admins at any time.
+                  {isOrgOwner
+                    ? 'Organization Owner • Full Root Access'
+                    : 'Member access • You can be re-invited by workspace admins at any time.'}
                 </div>
               </div>
             </div>
 
             <button
               type="button"
-              onClick={() => setIsLeaveModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-rose-500 hover:text-white hover:bg-rose-500"
+              disabled={isOrgOwner}
+              onClick={() => {
+                setLeaveError(null);
+                setIsLeaveModalOpen(true);
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-rose-500 hover:text-white hover:bg-rose-500 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ backgroundColor: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)' }}
+              title={isOrgOwner ? 'Organization owners cannot leave workspace' : 'Leave Workspace'}
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Leave Workspace</span>
@@ -533,15 +542,27 @@ export const ProfileView: React.FC = () => {
         {/* Confirmation Modal for Leaving Workspace */}
         <ConfirmationModal
           isOpen={isLeaveModalOpen}
-          onClose={() => setIsLeaveModalOpen(false)}
+          onClose={() => {
+            setIsLeaveModalOpen(false);
+            setLeaveError(null);
+          }}
           title={`Leave ${activeWorkspace?.name || 'Workspace'}?`}
-          message={`You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`}
-          confirmText="Yes, Leave Workspace"
-          cancelText="Cancel"
+          message={
+            leaveError 
+              ? `Action blocked: ${leaveError}` 
+              : `You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`
+          }
+          confirmText={leaveError ? 'Close' : 'Yes, Leave Workspace'}
+          cancelText={leaveError ? '' : 'Cancel'}
           variant="danger"
           iconType="logout"
           isLoading={isProcessing}
           onConfirm={async () => {
+            if (leaveError) {
+              setIsLeaveModalOpen(false);
+              setLeaveError(null);
+              return;
+            }
             if (!activeWorkspace) return;
             try {
               setIsProcessing(true);
@@ -550,8 +571,7 @@ export const ProfileView: React.FC = () => {
               );
               setIsLeaveModalOpen(false);
             } catch (err: any) {
-              console.error('Leave workspace error:', err);
-              setIsLeaveModalOpen(false);
+              setLeaveError(err.message || 'Failed to leave workspace.');
             } finally {
               setIsProcessing(false);
             }

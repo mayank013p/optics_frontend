@@ -209,6 +209,7 @@ interface OpticsContextType {
   handleResetPasswordViaOtp: (email: string, code: string, newPassword: string) => Promise<any>;
   handleUpdateProfile: (data: { name?: string; jobTitle?: string; avatarUrl?: string }) => Promise<void>;
   handleUpdatePassword: (data: { currentPassword?: string; newPassword: string }) => Promise<void>;
+  isOrgOwner: boolean;
 
   // Navigation & Theme
   currentTheme: string;
@@ -923,7 +924,25 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Auth: Leave Organization / Workspace
   const handleLeaveOrganization = async (orgId?: string) => {
-    // 1. Optimistic UI update: Remove active workspace from user's active list
+    // 1. Proactive validation: Organization Owner cannot abandon organization without transferring or deleting
+    if (isOrgOwner) {
+      throw new Error('As the Organization Owner, you cannot leave this workspace. You can transfer ownership to another admin or delete the workspace in Settings.');
+    }
+
+    // 2. Perform backend removal call first to confirm authorization
+    let res: any = null;
+    try {
+      if (currentUser?.id) {
+        res = await api.teams.remove(currentUser.id);
+      } else if (orgId) {
+        res = await api.auth.leaveOrg(orgId);
+      }
+    } catch (err: any) {
+      const errorMsg = err.message || err.error || 'You cannot leave this workspace. Please contact an organization administrator.';
+      throw new Error(errorMsg);
+    }
+
+    // 3. Once backend confirms removal, update local state
     if (activeWorkspace) {
       const nextWorkspaces = workspaces.filter((w) => w.id !== activeWorkspace.id);
       setWorkspaces(nextWorkspaces);
@@ -936,30 +955,10 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       }
     }
 
-    // 2. Remove current user from members directory
     if (currentUser?.id) {
       const nextMembers = members.filter((m) => m.user.id !== currentUser.id);
       setMembers(nextMembers);
       setCache('members', nextMembers);
-    }
-
-    // 3. Resilient backend call: Try teams.remove for current user first, fallback to leaveOrg
-    let res: any = null;
-    try {
-      if (currentUser?.id) {
-        res = await api.teams.remove(currentUser.id);
-      } else if (orgId) {
-        res = await api.auth.leaveOrg(orgId);
-      }
-    } catch (err) {
-      console.warn('Backend member removal fallback:', err);
-      if (orgId) {
-        try {
-          res = await api.auth.leaveOrg(orgId);
-        } catch (e) {
-          console.warn('Backend leaveOrg fallback:', e);
-        }
-      }
     }
 
     try {
@@ -2407,6 +2406,7 @@ export const OpticsProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         handleLogout,
         handleUpdateProfile,
         handleUpdatePassword,
+        isOrgOwner,
         currentTheme,
         setCurrentTheme,
         currentTab,

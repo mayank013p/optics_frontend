@@ -33,6 +33,7 @@ export const WorkspaceSettingsView: React.FC = () => {
     handleLeaveOrganization,
     setIsCreateWorkspaceOpen,
     isAdmin,
+    isOrgOwner,
     loading,
     authLoading
   } = useOptics();
@@ -46,6 +47,7 @@ export const WorkspaceSettingsView: React.FC = () => {
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [leaveError, setLeaveError] = useState<string | null>(null);
 
   useEffect(() => {
     if (activeWorkspace) {
@@ -392,21 +394,28 @@ export const WorkspaceSettingsView: React.FC = () => {
           </div>
         </div>
 
-        {/* Leave Workspace Action (Available for members / users who want to leave this workspace) */}
+        {/* Leave Workspace Action */}
         <div className={styles.dangerBody}>
           <div>
             <div className="font-semibold text-xs text-main">
               Leave Workspace
             </div>
             <div className="text-xs text-muted mt-0.5">
-              Voluntarily leave &quot;{activeWorkspace?.name || 'this workspace'}&quot;. You can be re-invited by an administrator at any time.
+              {isOrgOwner 
+                ? 'As the Organization Owner, you cannot leave this workspace. You can transfer ownership or delete the workspace below.'
+                : `Voluntarily leave "${activeWorkspace?.name || 'this workspace'}". You can be re-invited by an administrator at any time.`}
             </div>
           </div>
 
           <button
             type="button"
-            onClick={() => setIsLeaveModalOpen(true)}
+            disabled={isOrgOwner}
+            onClick={() => {
+              setLeaveError(null);
+              setIsLeaveModalOpen(true);
+            }}
             className={styles.leaveBtn}
+            title={isOrgOwner ? 'Organization owners cannot leave workspace' : 'Leave Workspace'}
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Leave Workspace</span>
@@ -442,23 +451,34 @@ export const WorkspaceSettingsView: React.FC = () => {
       {/* Confirmation Modal for Leaving Workspace */}
       <ConfirmationModal
         isOpen={isLeaveModalOpen}
-        onClose={() => setIsLeaveModalOpen(false)}
+        onClose={() => {
+          setIsLeaveModalOpen(false);
+          setLeaveError(null);
+        }}
         title={`Leave ${activeWorkspace?.name || 'Workspace'}?`}
-        message={`You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`}
-        confirmText="Yes, Leave Workspace"
-        cancelText="Cancel"
+        message={
+          leaveError 
+            ? `Action blocked: ${leaveError}` 
+            : `You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`
+        }
+        confirmText={leaveError ? 'Close' : 'Yes, Leave Workspace'}
+        cancelText={leaveError ? '' : 'Cancel'}
         variant="danger"
         iconType="logout"
         isLoading={isProcessing}
         onConfirm={async () => {
+          if (leaveError) {
+            setIsLeaveModalOpen(false);
+            setLeaveError(null);
+            return;
+          }
           if (!activeWorkspace) return;
           try {
             setIsProcessing(true);
             await handleLeaveOrganization(activeWorkspace.organizationId || activeWorkspace.id || 'default-org');
             setIsLeaveModalOpen(false);
           } catch (err: any) {
-            console.error('Leave workspace error:', err);
-            setIsLeaveModalOpen(false);
+            setLeaveError(err.message || 'Failed to leave workspace.');
           } finally {
             setIsProcessing(false);
           }

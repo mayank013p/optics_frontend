@@ -29,12 +29,13 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
   onUpdateMemberTeam,
   onRemoveMember,
 }) => {
-  const { loading, isAdmin, currentUser, activeWorkspace, members: allOrgMembers, teams, can, handleLeaveOrganization } = useOptics();
+  const { loading, isAdmin, isOrgOwner, currentUser, activeWorkspace, members: allOrgMembers, teams, can, handleLeaveOrganization } = useOptics();
   const [scope, setScope] = useState<'workspace' | 'all'>('workspace');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('ALL');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [leaveError, setLeaveError] = useState<string | null>(null);
   const [memberToRemove, setMemberToRemove] = useState<MemberItem | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -324,16 +325,23 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
                     {/* Actions column: Only Admins can resend/remove, or currentUser can Leave */}
                     <td className={`${styles.td} text-center`}>
-                      {isSelf && !isOwner ? (
+                      {isSelf && !isOwner && !isOrgOwner ? (
                         <button
                           type="button"
-                          onClick={() => setIsLeaveModalOpen(true)}
+                          onClick={() => {
+                            setLeaveError(null);
+                            setIsLeaveModalOpen(true);
+                          }}
                           className={styles.leaveBtn}
                           title="Leave Workspace"
                         >
                           <LogOut className="w-3 h-3" />
                           <span>Leave</span>
                         </button>
+                      ) : isSelf && (isOwner || isOrgOwner) ? (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                          Owner
+                        </span>
                       ) : isAdmin ? (
                         <div className={styles.actionBtnGroup}>
                           <button
@@ -377,15 +385,27 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
       {/* Confirmation Modal for Leaving Workspace */}
       <ConfirmationModal
         isOpen={isLeaveModalOpen}
-        onClose={() => setIsLeaveModalOpen(false)}
+        onClose={() => {
+          setIsLeaveModalOpen(false);
+          setLeaveError(null);
+        }}
         title={`Leave ${activeWorkspace?.name || 'Workspace'}?`}
-        message={`You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`}
-        confirmText="Yes, Leave Workspace"
-        cancelText="Cancel"
+        message={
+          leaveError 
+            ? `Action blocked: ${leaveError}` 
+            : `You will immediately lose access to all projects, boards, and docs in "${activeWorkspace?.name || 'this workspace'}". An administrator can re-invite you anytime.`
+        }
+        confirmText={leaveError ? 'Close' : 'Yes, Leave Workspace'}
+        cancelText={leaveError ? '' : 'Cancel'}
         variant="danger"
         iconType="logout"
         isLoading={isProcessing}
         onConfirm={async () => {
+          if (leaveError) {
+            setIsLeaveModalOpen(false);
+            setLeaveError(null);
+            return;
+          }
           try {
             setIsProcessing(true);
             await handleLeaveOrganization(
@@ -393,8 +413,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
             );
             setIsLeaveModalOpen(false);
           } catch (err: any) {
-            console.error('Leave workspace error:', err);
-            setIsLeaveModalOpen(false);
+            setLeaveError(err.message || 'Failed to leave workspace.');
           } finally {
             setIsProcessing(false);
           }
