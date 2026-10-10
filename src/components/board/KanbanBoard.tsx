@@ -21,6 +21,9 @@ import {
   Filter,
   Columns,
   UserCheck,
+  Users,
+  Layers,
+  ChevronDown,
 } from 'lucide-react';
 import { Priority, Issue } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
@@ -51,6 +54,8 @@ export const KanbanBoard: React.FC = () => {
   const [selectedAssignee, setSelectedAssignee] = useState<string>('ALL');
   const [isAddColumnOpen, setIsAddColumnOpen] = useState(false);
   const [newColumnName, setNewColumnName] = useState('');
+
+  const isAnyFilterActive = selectedAssignee !== 'ALL' || selectedPriority !== 'ALL' || selectedType !== 'ALL';
 
   // Linear-style Priority Indicators
   const renderPriority = (priority: Priority) => {
@@ -187,77 +192,99 @@ export const KanbanBoard: React.FC = () => {
           </div>
         </div>
 
-        {/* Clean Segmented Filters */}
+        {/* Clean Compact Single-Row Controls */}
         <div className={styles.headerControls}>
-          {/* Assignee Filter Segment */}
-          <div className={styles.segmentedFilter}>
-            <button
-              type="button"
-              onClick={() => setSelectedAssignee('ALL')}
-              className={`${styles.filterBtn} ${selectedAssignee === 'ALL' ? styles.filterBtnActive : ''}`}
-            >
-              All
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedAssignee('ME')}
-              className={`${styles.filterBtn} ${selectedAssignee === 'ME' ? styles.filterBtnActive : ''}`}
-              title={currentUser ? `Only show tasks assigned to ${currentUser.name}` : 'Assigned to Me'}
-            >
-              <UserCheck className="w-3 h-3" />
-              <span>Assigned to Me</span>
-            </button>
-            {members && members.length > 0 && (
+          {/* Quick "My Tasks" Toggle */}
+          <button
+            type="button"
+            onClick={() => setSelectedAssignee((prev) => (prev === 'ME' ? 'ALL' : 'ME'))}
+            className={`${styles.filterPillBtn} ${selectedAssignee === 'ME' ? styles.filterPillActive : ''}`}
+            title={currentUser ? `Filter tasks assigned to ${currentUser.name}` : 'Assigned to Me'}
+          >
+            <UserCheck className="w-3.5 h-3.5" />
+            <span>My Tasks</span>
+          </button>
+
+          {/* Teammate Filter Dropdown */}
+          {members && members.length > 0 && (
+            <div className={`${styles.filterSelectWrapper} ${!['ALL', 'ME'].includes(selectedAssignee) ? styles.filterPillActive : ''}`}>
+              <Users className="w-3.5 h-3.5 opacity-70" />
               <select
                 value={['ALL', 'ME'].includes(selectedAssignee) ? '' : selectedAssignee}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setSelectedAssignee(e.target.value);
-                  }
-                }}
-                className={`${styles.assigneeSelect} ${!['ALL', 'ME'].includes(selectedAssignee) ? styles.assigneeSelectActive : ''}`}
-                title="Filter by specific team member or unassigned"
+                onChange={(e) => setSelectedAssignee(e.target.value || 'ALL')}
+                className={styles.compactSelect}
+                title="Filter by team member"
               >
                 <option value="">
                   {!['ALL', 'ME'].includes(selectedAssignee)
-                    ? `👤 ${members.find((m) => m.user.id === selectedAssignee)?.user.name || (selectedAssignee === 'UNASSIGNED' ? 'Unassigned' : 'Member')}`
-                    : 'Team Member ▾'}
+                    ? (members.find((m) => m.user.id === selectedAssignee)?.user.name || (selectedAssignee === 'UNASSIGNED' ? 'Unassigned' : 'Member'))
+                    : 'Assignee'}
                 </option>
-                <option value="UNASSIGNED">Unassigned Tasks</option>
+                <option value="ALL">All Assignees</option>
+                <option value="UNASSIGNED">Unassigned</option>
                 {members.map((m) => (
                   <option key={m.user.id} value={m.user.id}>
-                    {m.user.name} ({m.role || 'Member'})
+                    {m.user.name}
                   </option>
                 ))}
               </select>
-            )}
+              <ChevronDown className="w-3 h-3 opacity-60 pointer-events-none" />
+            </div>
+          )}
+
+          {/* Priority Filter Dropdown */}
+          <div className={`${styles.filterSelectWrapper} ${selectedPriority !== 'ALL' ? styles.filterPillActive : ''}`}>
+            <SignalMedium className="w-3.5 h-3.5 opacity-70" />
+            <select
+              value={selectedPriority}
+              onChange={(e) => setSelectedPriority(e.target.value)}
+              className={styles.compactSelect}
+              title="Filter by priority"
+            >
+              <option value="ALL">Priority</option>
+              <option value="URGENT">Urgent 🔥</option>
+              <option value="HIGH">High</option>
+              <option value="MEDIUM">Medium</option>
+              <option value="LOW">Low</option>
+            </select>
+            <ChevronDown className="w-3 h-3 opacity-60 pointer-events-none" />
           </div>
 
-          <div className={styles.segmentedFilter}>
-            {['ALL', 'URGENT', 'HIGH', 'MEDIUM'].map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setSelectedPriority(p)}
-                className={`${styles.filterBtn} ${selectedPriority === p ? styles.filterBtnActive : ''}`}
-              >
-                {p === 'ALL' ? 'All Priorities' : p.charAt(0) + p.slice(1).toLowerCase()}
-              </button>
-            ))}
+          {/* Task Type Filter Dropdown */}
+          <div className={`${styles.filterSelectWrapper} ${selectedType !== 'ALL' ? styles.filterPillActive : ''}`}>
+            <Layers className="w-3.5 h-3.5 opacity-70" />
+            <select
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className={styles.compactSelect}
+              title="Filter by task type"
+            >
+              <option value="ALL">Type</option>
+              <option value="FEATURE">Feature</option>
+              <option value="BUG">Bug</option>
+              <option value="TASK">Task</option>
+              <option value="IMPROVEMENT">Improvement</option>
+              <option value="EPIC">Epic</option>
+            </select>
+            <ChevronDown className="w-3 h-3 opacity-60 pointer-events-none" />
           </div>
 
-          <div className={styles.segmentedFilter}>
-            {['ALL', 'FEATURE', 'BUG', 'TASK'].map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setSelectedType(t)}
-                className={`${styles.filterBtn} ${selectedType === t ? styles.filterBtnActive : ''}`}
-              >
-                {t === 'ALL' ? 'All Types' : t.charAt(0) + t.slice(1).toLowerCase()}
-              </button>
-            ))}
-          </div>
+          {/* Reset Filters CTA (Visible only when filters are active) */}
+          {isAnyFilterActive && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedAssignee('ALL');
+                setSelectedPriority('ALL');
+                setSelectedType('ALL');
+              }}
+              className={styles.clearFiltersBtn}
+              title="Reset all active filters"
+            >
+              <X className="w-3 h-3" />
+              <span>Reset</span>
+            </button>
+          )}
 
           <span className={styles.statsText}>
             {totalTasksCount} tasks · {totalPoints} pts
