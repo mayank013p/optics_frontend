@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { Users, UserPlus, Shield, CheckCircle2, Search, Mail, Trash2 } from 'lucide-react';
+import { Users, UserPlus, Shield, CheckCircle2, Search, Mail, Trash2, LogOut } from 'lucide-react';
 import { User } from '../../types';
 import { useOptics } from '../../context/OpticsContext';
 import { TeamsSkeleton, EmptyState } from '../common/Skeleton';
@@ -28,7 +28,7 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
   onUpdateMemberTeam,
   onRemoveMember,
 }) => {
-  const { loading, isAdmin, currentUser, activeWorkspace, members: allOrgMembers, teams, can } = useOptics();
+  const { loading, isAdmin, currentUser, activeWorkspace, members: allOrgMembers, teams, can, handleLeaveOrganization } = useOptics();
   const [scope, setScope] = useState<'workspace' | 'all'>('workspace');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTeam, setSelectedTeam] = useState('ALL');
@@ -318,9 +318,33 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                       )}
                     </td>
 
-                    {/* Actions column: Only Admins can resend invites or remove members */}
+                    {/* Actions column: Only Admins can resend/remove, or currentUser can Leave */}
                     <td className={`${styles.td} text-center`}>
-                      {isAdmin ? (
+                      {isSelf && !isOwner ? (
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (
+                              confirm(
+                                `Are you sure you want to leave ${activeWorkspace?.name || 'this workspace'}? An admin can re-invite you anytime.`
+                              )
+                            ) {
+                              try {
+                                await handleLeaveOrganization(
+                                  activeWorkspace?.organizationId || activeWorkspace?.id || 'default-org'
+                                );
+                              } catch (err: any) {
+                                alert(err.message || 'Failed to leave workspace');
+                              }
+                            }
+                          }}
+                          className={styles.leaveBtn}
+                          title="Leave Workspace"
+                        >
+                          <LogOut className="w-3 h-3" />
+                          <span>Leave</span>
+                        </button>
+                      ) : isAdmin ? (
                         <div className={styles.actionBtnGroup}>
                           <button
                             type="button"

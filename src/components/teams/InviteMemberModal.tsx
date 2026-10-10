@@ -159,10 +159,15 @@ export const InviteMemberModal: React.FC<InviteMemberModalProps> = ({
         ) : (
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className={styles.infoBanner}>
-              <Layers className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
-              <span>
-                Member will be added to workspace: <strong>{activeWorkspace?.name || 'Primary Workspace'}</strong>
-              </span>
+              <Layers className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-muted)', marginTop: '2px' }} />
+              <div>
+                <div>
+                  Adding to workspace: <strong>{activeWorkspace?.name || 'Primary Workspace'}</strong>
+                </div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', marginTop: '0.15rem' }}>
+                  Tip: You can invite new teammates or re-invite members who previously left.
+                </div>
+              </div>
             </div>
 
             {error && (

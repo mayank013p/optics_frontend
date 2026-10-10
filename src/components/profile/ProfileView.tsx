@@ -19,7 +19,9 @@ import {
   Zap,
   CheckCircle2,
   Lock,
-  FileText
+  FileText,
+  LogOut,
+  AlertTriangle
 } from 'lucide-react';
 import { useOptics } from '../../context/OpticsContext';
 import { ProfileSkeleton } from '../common/Skeleton';
@@ -31,9 +33,12 @@ export const ProfileView: React.FC = () => {
     currentTheme, 
     setCurrentTheme, 
     activeProject,
+    activeWorkspace,
+    workspaces,
     handleLogout,
     handleUpdateProfile,
     handleUpdatePassword,
+    handleLeaveOrganization,
     authLoading
   } = useOptics();
 
@@ -480,6 +485,60 @@ export const ProfileView: React.FC = () => {
                 </span>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* 4. Organization & Workspace Memberships */}
+        <section className={styles.cardSection}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionTitleGroup}>
+              <div className={styles.sectionIconPill}>
+                <Building2 className="w-4 h-4" strokeWidth={2} />
+              </div>
+              <div>
+                <h2 className={styles.sectionTitle}>Organization & Workspaces</h2>
+                <p className={styles.sectionSubtitle}>Manage your current workspace access and voluntary membership departures.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-xl border flex items-center justify-between gap-4 flex-wrap" style={{ backgroundColor: 'var(--bg-secondary)', borderColor: 'var(--border-color)' }}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-sm" style={{ backgroundColor: 'var(--bg-badge)', border: '1px solid var(--border-subtle)' }}>
+                {activeWorkspace?.name?.charAt(0) || 'O'}
+              </div>
+              <div>
+                <div className="font-bold text-sm text-main">{activeWorkspace?.name || 'Primary Workspace'}</div>
+                <div className="text-xs text-muted">
+                  Member access • You can be re-invited by workspace admins at any time.
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={async () => {
+                if (!activeWorkspace) return;
+                if (
+                  confirm(
+                    `Are you sure you want to leave "${activeWorkspace.name}"? You will lose access until an administrator invites you back.`
+                  )
+                ) {
+                  try {
+                    await handleLeaveOrganization(
+                      activeWorkspace.organizationId || activeWorkspace.id || 'default-org'
+                    );
+                  } catch (err: any) {
+                    alert(err.message || 'Failed to leave workspace');
+                  }
+                }
+              }}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-rose-500 hover:text-white hover:bg-rose-500"
+              style={{ backgroundColor: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)' }}
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Leave Workspace</span>
+            </button>
           </div>
         </section>
       </div>

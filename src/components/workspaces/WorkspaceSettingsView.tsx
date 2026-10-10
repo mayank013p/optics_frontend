@@ -14,7 +14,8 @@ import {
   Copy,
   AlertTriangle,
   FolderKanban,
-  Users
+  Users,
+  LogOut
 } from 'lucide-react';
 import { useOptics } from '../../context/OpticsContext';
 import { WorkspacesSkeleton } from '../common/Skeleton';
@@ -28,6 +29,7 @@ export const WorkspaceSettingsView: React.FC = () => {
     projects,
     handleUpdateWorkspace,
     handleDeleteWorkspace,
+    handleLeaveOrganization,
     setIsCreateWorkspaceOpen,
     isAdmin,
     loading,
@@ -377,22 +379,58 @@ export const WorkspaceSettingsView: React.FC = () => {
         </table>
       </div>
 
-      {/* 4. Danger Zone (Admin Only) */}
-      {isAdmin && (
-        <div className={styles.dangerCard}>
-          <div className={styles.dangerHeader}>
-            <div className="flex items-center gap-2 text-rose-500">
-              <AlertTriangle className="w-4 h-4" />
-              <h3 className={styles.dangerTitle}>Danger Zone</h3>
+      {/* 4. Danger & Membership Zone */}
+      <div className={styles.dangerCard}>
+        <div className={styles.dangerHeader}>
+          <div className="flex items-center gap-2 text-rose-500">
+            <AlertTriangle className="w-4 h-4" />
+            <h3 className={styles.dangerTitle}>Membership & Danger Zone</h3>
+          </div>
+        </div>
+
+        {/* Leave Workspace Action (Available for members / users who want to leave this workspace) */}
+        <div className={styles.dangerBody}>
+          <div>
+            <div className="font-semibold text-xs text-main">
+              Leave Workspace
+            </div>
+            <div className="text-xs text-muted mt-0.5">
+              Voluntarily leave &quot;{activeWorkspace?.name || 'this workspace'}&quot;. You can be re-invited by an administrator at any time.
             </div>
           </div>
-          <div className={styles.dangerBody}>
+
+          <button
+            type="button"
+            onClick={async () => {
+              if (!activeWorkspace) return;
+              if (
+                confirm(
+                  `Are you sure you want to leave "${activeWorkspace.name}"? You will lose access until an administrator invites you back.`
+                )
+              ) {
+                try {
+                  await handleLeaveOrganization(activeWorkspace.organizationId || activeWorkspace.id || 'default-org');
+                } catch (err: any) {
+                  alert(err.message || 'Failed to leave workspace');
+                }
+              }
+            }}
+            className={styles.leaveBtn}
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Leave Workspace</span>
+          </button>
+        </div>
+
+        {/* Delete Workspace Action (Admin Only) */}
+        {isAdmin && (
+          <div className="pt-3 border-t flex items-center justify-between gap-4 flex-wrap" style={{ borderColor: 'rgba(239, 68, 68, 0.15)' }}>
             <div>
               <div className="font-semibold text-xs text-main">
                 Delete Active Workspace
               </div>
               <div className="text-xs text-muted mt-0.5">
-                Permanently delete "{activeWorkspace?.name || 'this workspace'}" and its configurations.
+                Permanently delete &quot;{activeWorkspace?.name || 'this workspace'}&quot; and its configurations.
                 {workspaces.length <= 1 && ' (Cannot delete the only remaining workspace).'}
               </div>
             </div>
@@ -412,8 +450,8 @@ export const WorkspaceSettingsView: React.FC = () => {
               <span>Delete Workspace</span>
             </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
