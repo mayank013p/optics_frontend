@@ -36,7 +36,7 @@ import WorkspaceSimulation from './WorkspaceSimulation';
 import MagicBento from './MagicBento';
 import OpticsLogo from '../brand/OpticsLogo';
 import Dock, { DockItemData } from '../dock/Dock';
-import CardSwap, { Card } from '../cardswap/CardSwap';
+import CardSwap, { Card, CardSwapRef } from '../cardswap/CardSwap';
 
 interface LandingViewProps {
   onOpenAuth: (mode?: 'login' | 'register') => void;
@@ -45,13 +45,15 @@ interface LandingViewProps {
 }
 
 export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingViewProps) {
-  // FAQ Accordion Active Index
-  const [activeFaq, setActiveFaq] = useState<number | null>(0);
+  // FAQ Active Index and CardSwap Controller Ref
+  const [activeFaq, setActiveFaq] = useState<number>(0);
+  const faqCardSwapRef = React.useRef<CardSwapRef | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('hero');
 
-  const toggleFaq = (index: number) => {
-    setActiveFaq(activeFaq === index ? null : index);
+  const handleSelectFaq = (index: number) => {
+    setActiveFaq(index);
+    faqCardSwapRef.current?.goToIndex(index);
   };
 
   // Scroll threshold listener (hides navbar links and reveals top floating dock)
@@ -988,7 +990,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
         </div>
       </section>
 
-      {/* 7. FAQ Accordion Section with CardSwap Decks on Left & Right */}
+      {/* 7. Interactive FAQ Section (Left: Questions Selector List, Right: Large CardSwap Explanation Deck) */}
       <section className={styles.faqSection} id="faq">
         <div className={styles.sectionHeader} style={{ textAlign: 'center', maxWidth: '46rem', margin: '0 auto' }}>
           <div className={styles.sectionKicker} style={{ justifyContent: 'center' }}>
@@ -998,244 +1000,355 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
           </div>
           <h2 className={styles.sectionTitle}>Frequently asked questions</h2>
           <p className={styles.sectionSubtitle}>
-            Everything you need to know about getting started, sprint velocity, and our real-time architecture.
+            Select any question on the left or swipe the deck on the right to inspect architecture, permissions, and workflow details.
           </p>
         </div>
 
-        <div className={styles.faqLayoutContainer}>
-          {/* Left Side: CardSwap with Optics Engineering Highlights */}
-          <div className={styles.faqCardSwapCol}>
-            <div className={styles.faqCardSwapHeader}>
-              <span className={styles.faqCardSwapBadge}>ARCHITECTURE</span>
-              <h3 className={styles.faqCardSwapTitle}>Built for ultra-fast shipping</h3>
+        <div className={styles.faqTwoColContainer}>
+          {/* Left Column: Interactive Questions List (Without grid, clean selectable rows) */}
+          <div className={styles.faqQuestionsCol}>
+            <div className={styles.faqQuestionsHeader}>
+              <span className={styles.faqQuestionsHeaderLabel}>QUESTIONS &amp; TOPICS</span>
+              <span className={styles.faqQuestionsCount}>6 Items</span>
             </div>
-            <div className={styles.faqCardSwapWrapper}>
-              <CardSwap
-                width={280}
-                height={220}
-                cardDistance={24}
-                verticalDistance={28}
-                depth={45}
-                skewAmount={3}
-                delay={3800}
-                theme="light"
-                pauseOnHover={true}
-                draggable={true}
-              >
-                <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><Zap className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Real-Time Canvas</span>
-                    </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>Sub-50ms Sync</h4>
-                      <p className={styles.brandCardText}>
-                        Multiplayer cursor and state updates broadcast with sub-50ms latency.
-                      </p>
-                    </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>0.04s</span>
-                      <span className={styles.brandCardSub}>p99 Propagation</span>
-                    </div>
-                  </div>
-                </Card>
 
-                <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><ShieldCheck className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Security</span>
-                    </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>Tenant Isolation</h4>
-                      <p className={styles.brandCardText}>
-                        Granular RBAC boundaries with encrypted audit logs and active session guards.
-                      </p>
-                    </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>AES-256</span>
-                      <span className={styles.brandCardSub}>Zero Knowledge</span>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><GitPullRequest className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Dev Workflow</span>
-                    </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>Autonomous CI/CD</h4>
-                      <p className={styles.brandCardText}>
-                        Auto-close tickets on branch merge and stream commit badges directly to cards.
-                      </p>
-                    </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>100%</span>
-                      <span className={styles.brandCardSub}>Git Integration</span>
-                    </div>
-                  </div>
-                </Card>
-
-                <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><TrendingUp className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Velocity</span>
-                    </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>42% Faster Cycles</h4>
-                      <p className={styles.brandCardText}>
-                        Eliminate planning drag and keep your high-leverage engineers in flow state.
-                      </p>
-                    </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>-4.8 hrs</span>
-                      <span className={styles.brandCardSub}>Meeting Overhead</span>
-                    </div>
-                  </div>
-                </Card>
-              </CardSwap>
-            </div>
-          </div>
-
-          {/* Center Column: Interactive FAQ Accordion */}
-          <div className={styles.faqList}>
-            {[
-              {
-                q: 'How fast does Optics update for the team?',
-                a: 'Optics updates immediately in real-time. Whenever someone on your team creates a task, moves a card, or updates a doc, everyone sees it instantly without having to refresh the page.'
-              },
-              {
-                q: 'Can we import our existing tasks and projects?',
-                a: 'Yes. You can easily import tasks and projects from CSV or existing tools so your team can get started in minutes without losing momentum.'
-              },
-              {
-                q: 'How do team permissions and roles work?',
-                a: 'Optics provides simple, intuitive roles — from workspace owners and leads to team members and view-only guests — making it easy to manage who can edit or view each project.'
-              },
-              {
-                q: 'Can we organize multiple projects and teams?',
-                a: 'Yes. You can create separate workspaces for different teams, departments, or client projects, keeping everything neat and organized in one place.'
-              },
-              {
-                q: 'Is there any credit card required or hidden fees?',
-                a: 'No. Optics is 100% free with unlimited tasks, boards, and project docs for all engineering teams.'
-              }
-            ].map((item, idx) => (
-              <div key={idx} className={styles.faqItem}>
-                <div 
-                  className={styles.faqQuestionRow}
-                  onClick={() => toggleFaq(idx)}
+            <div className={styles.faqQuestionsList}>
+              {[
+                {
+                  id: 0,
+                  num: '01',
+                  tag: 'Real-Time Sync',
+                  q: 'How fast does Optics update for the team?',
+                  summary: 'Sub-50ms WebSocket mesh with instantaneous multiplayer state sync.'
+                },
+                {
+                  id: 1,
+                  num: '02',
+                  tag: 'Data Migration',
+                  q: 'Can we import our existing tasks and projects?',
+                  summary: '1-click import from CSV, JSON, and standard project management platforms.'
+                },
+                {
+                  id: 2,
+                  num: '03',
+                  tag: 'Security & RBAC',
+                  q: 'How do team permissions and access roles work?',
+                  summary: 'Granular role hierarchies with encrypted audit telemetry and guest sandboxing.'
+                },
+                {
+                  id: 3,
+                  num: '04',
+                  tag: 'Workspace Topology',
+                  q: 'Can we organize multiple projects and squads?',
+                  summary: 'Unlimited isolated workspaces with instant ⌘K project switching.'
+                },
+                {
+                  id: 4,
+                  num: '05',
+                  tag: 'Transparent Value',
+                  q: 'Is there any credit card requirement or paid tier?',
+                  summary: '100% free with unlimited tasks, boards, and members forever.'
+                },
+                {
+                  id: 5,
+                  num: '06',
+                  tag: 'Developer Flow',
+                  q: 'How does Optics integrate with git workflows?',
+                  summary: 'Direct GitHub PR linking with automated column status progression on merge.'
+                }
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => handleSelectFaq(item.id)}
+                  className={`${styles.faqQuestionBtn} ${activeFaq === item.id ? styles.faqQuestionBtnActive : ''}`}
                 >
-                  <span className={styles.faqQuestion}>{item.q}</span>
-                  <ChevronDown 
-                    className="w-4 h-4 text-stone-500 transition-transform duration-200"
-                    style={{ transform: activeFaq === idx ? 'rotate(180deg)' : 'none' }}
-                  />
-                </div>
-                {activeFaq === idx && (
-                  <div className={styles.faqAnswer}>
-                    {item.a}
+                  <div className={styles.faqQuestionBtnLeft}>
+                    <span className={styles.faqQuestionNum}>{item.num}</span>
+                    <div className={styles.faqQuestionTextGroup}>
+                      <span className={styles.faqQuestionTag}>{item.tag}</span>
+                      <span className={styles.faqQuestionTitle}>{item.q}</span>
+                      <span className={styles.faqQuestionSummary}>{item.summary}</span>
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+                  <div className={styles.faqQuestionArrowWrap}>
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Right Side: CardSwap with Optics Team & Product Highlights */}
-          <div className={styles.faqCardSwapCol}>
-            <div className={styles.faqCardSwapHeader}>
-              <span className={styles.faqCardSwapBadge}>WORKSPACES</span>
-              <h3 className={styles.faqCardSwapTitle}>Effortless team collaboration</h3>
+          {/* Right Column: Large CardSwap Slide Deck with Full Detailed Explanation */}
+          <div className={styles.faqSlideDeckCol}>
+            <div className={styles.faqSlideDeckHeader}>
+              <span className={styles.faqSlideDeckHeaderLabel}>DETAILED SPECIFICATION &amp; EXPLANATION</span>
+              <span className={styles.faqSlideDeckActivePill}>Slide {activeFaq + 1} of 6</span>
             </div>
-            <div className={styles.faqCardSwapWrapper}>
+
+            <div className={styles.faqLargeCardSwapWrapper}>
               <CardSwap
-                width={280}
-                height={220}
-                cardDistance={24}
-                verticalDistance={28}
-                depth={45}
-                skewAmount={-3}
-                delay={4400}
+                ref={faqCardSwapRef}
+                width={480}
+                height={360}
+                cardDistance={32}
+                verticalDistance={38}
+                depth={65}
+                skewAmount={3.5}
+                delay={5200}
                 theme="light"
                 pauseOnHover={true}
                 draggable={true}
+                onChange={(index) => setActiveFaq(index)}
               >
+                {/* Card 1: Real-Time Sync */}
                 <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><FolderLock className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Organization</span>
+                  <div className={styles.faqDeckCardInner}>
+                    <div className={styles.faqDeckCardHeader}>
+                      <div className={styles.faqDeckCardBadge}>
+                        <Zap className="w-4 h-4 text-amber-500" />
+                        <span>01 / REAL-TIME SYNCHRONIZATION</span>
+                      </div>
+                      <span className={styles.faqDeckMetricPill}>0.04s p99</span>
                     </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>Unified Docs & Sprints</h4>
-                      <p className={styles.brandCardText}>
-                        Live markdown specs, task dependencies, and project wikis in a single view.
+
+                    <div className={styles.faqDeckCardContent}>
+                      <h3 className={styles.faqDeckCardTitle}>
+                        How fast does Optics update for the team?
+                      </h3>
+                      <p className={styles.faqDeckCardDesc}>
+                        Optics runs on an ultra-low latency WebSocket mesh. Whenever someone on your team creates a task, drags a card across columns, or edits a project spec, all active workspace members receive updates in real-time with zero polling overhead.
                       </p>
                     </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>1 Surface</span>
-                      <span className={styles.brandCardSub}>Zero Tab Switching</span>
+
+                    <div className={styles.faqDeckChecklist}>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Instant multiplayer cursor updates without page refresh</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Optimistic client state with automatic conflict resolution</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Lightweight delta payloads preserving battery and bandwidth</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.faqDeckCardFooter}>
+                      <span className={styles.faqDeckFooterLabel}>Propagation Speed</span>
+                      <span className={styles.faqDeckFooterVal}>Sub-50ms Global Node Sync</span>
                     </div>
                   </div>
                 </Card>
 
+                {/* Card 2: Data Migration */}
                 <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><Users className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Team Scale</span>
+                  <div className={styles.faqDeckCardInner}>
+                    <div className={styles.faqDeckCardHeader}>
+                      <div className={styles.faqDeckCardBadge}>
+                        <FileText className="w-4 h-4 text-blue-500" />
+                        <span>02 / DATA MIGRATION &amp; IMPORT</span>
+                      </div>
+                      <span className={styles.faqDeckMetricPill}>&lt; 60s Import</span>
                     </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>Instant Setup</h4>
-                      <p className={styles.brandCardText}>
-                        Invite teammates via email or magic link and start collaborating in seconds.
+
+                    <div className={styles.faqDeckCardContent}>
+                      <h3 className={styles.faqDeckCardTitle}>
+                        Can we import our existing tasks and projects?
+                      </h3>
+                      <p className={styles.faqDeckCardDesc}>
+                        Yes. Optics includes built-in importers for CSV, JSON, and existing tracking software. Your labels, subtasks, markdown descriptions, and team member assignments are automatically recognized and ported in seconds without losing sprint momentum.
                       </p>
                     </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>&lt; 60s</span>
-                      <span className={styles.brandCardSub}>Setup Time</span>
+
+                    <div className={styles.faqDeckChecklist}>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Preserves task hierarchy, tags, and sprint milestones</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Automatic member email matching and squad mapping</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Zero downtime transition with side-by-side verification</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.faqDeckCardFooter}>
+                      <span className={styles.faqDeckFooterLabel}>Supported Formats</span>
+                      <span className={styles.faqDeckFooterVal}>CSV, JSON, Markdown, API</span>
                     </div>
                   </div>
                 </Card>
 
+                {/* Card 3: Security & RBAC */}
                 <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><CheckSquare className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Transparency</span>
+                  <div className={styles.faqDeckCardInner}>
+                    <div className={styles.faqDeckCardHeader}>
+                      <div className={styles.faqDeckCardBadge}>
+                        <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                        <span>03 / SECURITY &amp; ACCESS CONTROL</span>
+                      </div>
+                      <span className={styles.faqDeckMetricPill}>AES-256</span>
                     </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>100% Free For Teams</h4>
-                      <p className={styles.brandCardText}>
-                        Full capabilities without artificial tier locks or per-seat monthly subscription tax.
+
+                    <div className={styles.faqDeckCardContent}>
+                      <h3 className={styles.faqDeckCardTitle}>
+                        How do team permissions and access roles work?
+                      </h3>
+                      <p className={styles.faqDeckCardDesc}>
+                        Optics provides strict, intuitive role-based access control (RBAC). Configure Workspace Owners, Technical Leads, Team Members, and View-Only Guests. Control project read/write rights and board creation with cryptographic audit log verification.
                       </p>
                     </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>$0</span>
-                      <span className={styles.brandCardSub}>Free For Teams</span>
+
+                    <div className={styles.faqDeckChecklist}>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Granular role boundaries for internal teams and contractors</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Comprehensive audit logs recording all workspace actions</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Zero-knowledge data encryption at rest and in transit</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.faqDeckCardFooter}>
+                      <span className={styles.faqDeckFooterLabel}>Access Standard</span>
+                      <span className={styles.faqDeckFooterVal}>Multi-Tier Scoped Permissions</span>
                     </div>
                   </div>
                 </Card>
 
+                {/* Card 4: Workspace Topology */}
                 <Card>
-                  <div className={styles.brandCardInner}>
-                    <div className={styles.brandCardHeader}>
-                      <span className={styles.brandCardIcon}><Command className="w-4 h-4" /></span>
-                      <span className={styles.brandCardTag}>Efficiency</span>
+                  <div className={styles.faqDeckCardInner}>
+                    <div className={styles.faqDeckCardHeader}>
+                      <div className={styles.faqDeckCardBadge}>
+                        <FolderLock className="w-4 h-4 text-purple-500" />
+                        <span>04 / WORKSPACE TOPOLOGY</span>
+                      </div>
+                      <span className={styles.faqDeckMetricPill}>Unlimited</span>
                     </div>
-                    <div className={styles.brandCardBody}>
-                      <h4 className={styles.brandCardHeading}>Command Bar Speed</h4>
-                      <p className={styles.brandCardText}>
-                        Navigate, create tickets, and switch projects instantly with ⌘K shortcuts.
+
+                    <div className={styles.faqDeckCardContent}>
+                      <h3 className={styles.faqDeckCardTitle}>
+                        Can we organize multiple projects and squads?
+                      </h3>
+                      <p className={styles.faqDeckCardDesc}>
+                        Yes. You can create dedicated workspaces for different engineering squads, client deliverables, or cross-functional departments. Switch between them instantly via the ⌘K command bar while keeping confidential project notes isolated.
                       </p>
                     </div>
-                    <div className={styles.brandCardFooter}>
-                      <span className={styles.brandCardMetric}>⌘K</span>
-                      <span className={styles.brandCardSub}>Command Palette</span>
+
+                    <div className={styles.faqDeckChecklist}>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Complete isolation between client and internal projects</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Dedicated sprint boards, backlogs, and markdown wikis</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Unified cross-project search with ⌘K keyboard shortcuts</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.faqDeckCardFooter}>
+                      <span className={styles.faqDeckFooterLabel}>Organization Scale</span>
+                      <span className={styles.faqDeckFooterVal}>Infinite Spaces &amp; Boards</span>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Card 5: Transparent Value */}
+                <Card>
+                  <div className={styles.faqDeckCardInner}>
+                    <div className={styles.faqDeckCardHeader}>
+                      <div className={styles.faqDeckCardBadge}>
+                        <CheckSquare className="w-4 h-4 text-emerald-600" />
+                        <span>05 / TRANSPARENT PRICING</span>
+                      </div>
+                      <span className={styles.faqDeckMetricPill}>$0 / Free</span>
+                    </div>
+
+                    <div className={styles.faqDeckCardContent}>
+                      <h3 className={styles.faqDeckCardTitle}>
+                        Is there any hidden subscription or credit card requirement?
+                      </h3>
+                      <p className={styles.faqDeckCardDesc}>
+                        No. Optics is 100% free with unconstrained access for all engineering teams. We do not ask for credit cards, charge per-seat monthly subscription taxes, or artificially lock vital productivity features behind expensive upgrade tiers.
+                      </p>
+                    </div>
+
+                    <div className={styles.faqDeckChecklist}>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Unlimited team members, workspaces, boards, and docs</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>No credit card required to register or use</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Zero trial expiration dates or surprise invoices</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.faqDeckCardFooter}>
+                      <span className={styles.faqDeckFooterLabel}>Commitment</span>
+                      <span className={styles.faqDeckFooterVal}>Free Forever For Builders</span>
+                    </div>
+                  </div>
+                </Card>
+
+                {/* Card 6: Developer Toolchain */}
+                <Card>
+                  <div className={styles.faqDeckCardInner}>
+                    <div className={styles.faqDeckCardHeader}>
+                      <div className={styles.faqDeckCardBadge}>
+                        <Code2 className="w-4 h-4 text-indigo-500" />
+                        <span>06 / DEVELOPER TOOLCHAIN</span>
+                      </div>
+                      <span className={styles.faqDeckMetricPill}>Git &amp; CI/CD</span>
+                    </div>
+
+                    <div className={styles.faqDeckCardContent}>
+                      <h3 className={styles.faqDeckCardTitle}>
+                        How does Optics integrate with git and engineering workflows?
+                      </h3>
+                      <p className={styles.faqDeckCardDesc}>
+                        Link GitHub pull requests, commits, and branch names straight into task cards. When pull requests merge, tickets automatically advance to the Done column, eliminating status update meetings and keeping engineers in flow state.
+                      </p>
+                    </div>
+
+                    <div className={styles.faqDeckChecklist}>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Automated PR linking and branch-to-card association</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Live CI/CD build status badges streamed into Kanban cards</span>
+                      </div>
+                      <div className={styles.faqDeckCheckItem}>
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                        <span>Developer-first keyboard hotkeys for rapid task creation</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.faqDeckCardFooter}>
+                      <span className={styles.faqDeckFooterLabel}>Workflow Impact</span>
+                      <span className={styles.faqDeckFooterVal}>42% Cycle Time Reduction</span>
                     </div>
                   </div>
                 </Card>

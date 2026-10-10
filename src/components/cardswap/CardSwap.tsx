@@ -154,6 +154,7 @@ const ItemCard = ({ item }: { item: CardSwapItem }) => (
 export interface CardSwapRef {
   next: () => void;
   prev: () => void;
+  goToIndex: (targetIndex: number) => void;
 }
 
 export interface CardSwapProps {
@@ -238,7 +239,7 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(
     const stageRef = useRef<HTMLDivElement | null>(null);
     const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
     const shadeRefs = useRef<(HTMLSpanElement | null)[]>([]);
-    const apiRef = useRef<{ next: () => void; prev: () => void; refresh: () => void } | null>(null);
+    const apiRef = useRef<{ next: () => void; prev: () => void; goToIndex: (index: number) => void; refresh: () => void } | null>(null);
     const settingsRef = useRef<any>(null);
 
     const cards = useMemo(() => {
@@ -294,7 +295,8 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(
       ref,
       () => ({
         next: () => apiRef.current?.next(),
-        prev: () => apiRef.current?.prev()
+        prev: () => apiRef.current?.prev(),
+        goToIndex: (targetIndex: number) => apiRef.current?.goToIndex(targetIndex)
       }),
       []
     );
@@ -737,6 +739,10 @@ export const CardSwap = forwardRef<CardSwapRef, CardSwapProps>(
       apiRef.current = {
         next: () => shift(1),
         prev: () => shift(-1),
+        goToIndex: (targetIndex: number) => {
+          const position = state.order.indexOf(targetIndex);
+          if (position > 0) goTo(position);
+        },
         refresh: () => {
           const s = settingsRef.current;
           deck.forEach(card => {
