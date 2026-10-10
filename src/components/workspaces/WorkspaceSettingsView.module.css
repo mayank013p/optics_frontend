@@ -607,3 +607,10 @@
   background-color: #ef4444;
   color: #fff;
 }
+
+.leaveBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  filter: grayscale(0.6);
+}

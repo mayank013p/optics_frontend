@@ -325,7 +325,12 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
 
                     {/* Actions column: Only Admins can resend/remove, or currentUser can Leave */}
                     <td className={`${styles.td} text-center`}>
-                      {isSelf && !isOwner && !isOrgOwner ? (
+                      {isSelf && (isOwner || isOrgOwner || isAdmin || m.role.toLowerCase().includes('admin')) ? (
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 inline-flex items-center gap-1 font-mono">
+                          <Shield className="w-2.5 h-2.5" />
+                          {isOwner || isOrgOwner ? 'Owner' : 'Admin'}
+                        </span>
+                      ) : isSelf ? (
                         <button
                           type="button"
                           onClick={() => {
@@ -338,10 +343,6 @@ export const TeamsView: React.FC<TeamsViewProps> = ({
                           <LogOut className="w-3 h-3" />
                           <span>Leave</span>
                         </button>
-                      ) : isSelf && (isOwner || isOrgOwner) ? (
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                          Owner
-                        </span>
                       ) : isAdmin ? (
                         <div className={styles.actionBtnGroup}>
                           <button

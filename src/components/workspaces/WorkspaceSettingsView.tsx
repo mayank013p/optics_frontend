@@ -401,21 +401,22 @@ export const WorkspaceSettingsView: React.FC = () => {
               Leave Workspace
             </div>
             <div className="text-xs text-muted mt-0.5">
-              {isOrgOwner 
-                ? 'As the Organization Owner, you cannot leave this workspace. You can transfer ownership or delete the workspace below.'
+              {(isAdmin || isOrgOwner)
+                ? 'Administrators and Organization Owners cannot leave this workspace. You can delete the workspace below or reassign administrative privileges.'
                 : `Voluntarily leave "${activeWorkspace?.name || 'this workspace'}". You can be re-invited by an administrator at any time.`}
             </div>
           </div>
 
           <button
             type="button"
-            disabled={isOrgOwner}
+            disabled={isAdmin || isOrgOwner}
             onClick={() => {
+              if (isAdmin || isOrgOwner) return;
               setLeaveError(null);
               setIsLeaveModalOpen(true);
             }}
             className={styles.leaveBtn}
-            title={isOrgOwner ? 'Organization owners cannot leave workspace' : 'Leave Workspace'}
+            title={(isAdmin || isOrgOwner) ? 'Administrators and Owners cannot leave workspace' : 'Leave Workspace'}
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Leave Workspace</span>

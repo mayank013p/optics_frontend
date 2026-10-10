@@ -40,6 +40,7 @@ export const ProfileView: React.FC = () => {
     handleUpdateProfile,
     handleUpdatePassword,
     handleLeaveOrganization,
+    isAdmin,
     isOrgOwner,
     authLoading
   } = useOptics();
@@ -517,6 +518,8 @@ export const ProfileView: React.FC = () => {
                 <div className="text-xs text-muted">
                   {isOrgOwner
                     ? 'Organization Owner • Full Root Access'
+                    : isAdmin
+                    ? 'Workspace Administrator • Full Workspace Access'
                     : 'Member access • You can be re-invited by workspace admins at any time.'}
                 </div>
               </div>
@@ -524,14 +527,15 @@ export const ProfileView: React.FC = () => {
 
             <button
               type="button"
-              disabled={isOrgOwner}
+              disabled={isAdmin || isOrgOwner}
               onClick={() => {
+                if (isAdmin || isOrgOwner) return;
                 setLeaveError(null);
                 setIsLeaveModalOpen(true);
               }}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-all cursor-pointer text-rose-500 hover:text-white hover:bg-rose-500 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ backgroundColor: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)' }}
-              title={isOrgOwner ? 'Organization owners cannot leave workspace' : 'Leave Workspace'}
+              title={(isAdmin || isOrgOwner) ? 'Administrators and Owners cannot leave workspace' : 'Leave Workspace'}
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Leave Workspace</span>
