@@ -269,8 +269,7 @@ function InviteAcceptForm() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Minimum 6 characters"
-                      className={styles.input}
-                      style={{ paddingRight: '2.5rem' }}
+                      className={`${styles.input} ${styles.inputWithToggle}`}
                     />
                     <button
                       type="button"

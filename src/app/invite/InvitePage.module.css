@@ -126,15 +126,17 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .inputIcon {
   position: absolute;
-  left: 0.75rem;
-  width: 0.875rem;
-  height: 0.875rem;
+  left: 0.875rem;
+  width: 1rem;
+  height: 1rem;
   color: var(--text-dim, #78716c);
   pointer-events: none;
+  z-index: 2;
 }
 
 .input {
@@ -142,7 +144,7 @@
   background-color: var(--bg-secondary, #f3efea);
   border: 1px solid var(--border-color, #e6e1d6);
   border-radius: var(--radius-md, 0.625rem);
-  padding: 0.5625rem 0.75rem 0.5625rem 2.125rem;
+  padding: 0.625rem 0.875rem 0.625rem 2.625rem;
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-main, #1c1917);
@@ -151,9 +153,15 @@
   transition: all 0.15s ease;
 }
 
+.input::placeholder {
+  color: var(--text-dim, #a8a29e);
+  font-weight: 500;
+}
+
 .input:focus {
   background-color: #ffffff;
   border-color: var(--text-main, #1c1917);
+  box-shadow: 0 0 0 2px rgba(28, 25, 23, 0.08);
 }
 
 .inputDisabled {
@@ -161,6 +169,10 @@
   cursor: not-allowed;
   font-family: var(--font-mono, monospace);
   font-size: 0.75rem;
+}
+
+.inputWithToggle {
+  padding-right: 2.625rem;
 }
 
 .eyeToggle {
