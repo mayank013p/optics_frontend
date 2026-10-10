@@ -977,18 +977,162 @@
 
 /* 8. FAQ Accordion Section */
 .faqSection {
-  max-width: 52rem;
+  max-width: 84rem;
   margin: 0 auto;
-  padding: 5rem 1.5rem;
+  padding: 6.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 3.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.faqLayoutContainer {
+  display: grid;
+  grid-template-columns: 310px 1fr 310px;
+  gap: 2.25rem;
+  align-items: start;
+  width: 100%;
+}
+
+.faqCardSwapCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.faqCardSwapHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.faqCardSwapBadge {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #78716c;
+  background: #ede7db;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.faqCardSwapTitle {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #18181b;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.faqCardSwapWrapper {
+  width: 100%;
+  height: 310px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Branded CardSwap Content Styles */
+.brandCardInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e7e2d8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.brandCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brandCardIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #18181b;
+  color: #faf8f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.brandCardTag {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #78716c;
+}
+
+.brandCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.5rem 0;
+}
+
+.brandCardHeading {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 800;
+  color: #18181b;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.brandCardText {
+  font-size: 0.8125rem;
+  color: #57534e;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.brandCardFooter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  border-top: 1px solid #f0ebe1;
+  padding-top: 0.625rem;
+}
+
+.brandCardMetric {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 1.1875rem;
+  font-weight: 800;
+  color: #18181b;
+}
+
+.brandCardSub {
+  font-size: 0.6875rem;
+  color: #78716c;
+  font-weight: 500;
 }
 
 .faqList {
   display: flex;
   flex-direction: column;
   gap: 0.875rem;
+  width: 100%;
 }
 
 .faqItem {
@@ -996,7 +1140,12 @@
   border: 1px solid #e7e2d8;
   border-radius: 16px;
   overflow: hidden;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.faqItem:hover {
+  border-color: #d6cfc3;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .faqQuestionRow {
@@ -1875,6 +2024,17 @@
 }
 
 /* Responsive Breakpoints */
+@media (max-width: 1100px) {
+  .faqLayoutContainer {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+  .faqCardSwapCol {
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+}
+
 @media (max-width: 1024px) {
   .heroTwoColGrid { grid-template-columns: 1fr; gap: 3rem; }
   .heroLeftCol { align-items: center; text-align: center; }
