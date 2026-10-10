@@ -54,35 +54,24 @@ export const CreateWorkspaceModal: React.FC<CreateWorkspaceModalProps> = ({
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {isLimitReached ? (
-            <div
-              className="p-3.5 rounded-xl border flex flex-col gap-2.5"
-              style={{
-                backgroundColor: 'rgba(180, 83, 9, 0.06)',
-                borderColor: 'rgba(180, 83, 9, 0.2)',
-                color: 'var(--text-main)',
-              }}
-            >
-              <div className="flex items-center gap-2 font-bold text-xs" style={{ color: 'var(--accent-amber, #b45309)' }}>
+            <div className={styles.limitBanner}>
+              <div className={styles.limitBannerHeader}>
+                <Sparkles className="w-4 h-4 flex-shrink-0" />
                 <span>Free Plan Workspace Limit Reached (1/1)</span>
               </div>
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              <p className={styles.limitBannerText}>
                 The <strong>Free Plan</strong> is limited to <strong>1 Workspace</strong> with unlimited team members and up to 5 projects. Upgrade to Optics Pro to unlock unlimited workspaces, cross-workspace reporting, and advanced multi-tenancy.
               </p>
-              <div className="flex items-center gap-2 mt-1">
+              <div className={styles.limitBannerActions}>
                 <button
                   type="button"
                   onClick={() => {
                     onClose();
                     window.location.href = '/pricing';
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all"
-                  style={{
-                    backgroundColor: 'var(--accent-amber, #b45309)',
-                    color: '#ffffff',
-                    border: 'none',
-                  }}
+                  className={styles.limitBannerBtn}
                 >
-                  <Sparkles className="w-3 h-3 inline" />
+                  <Sparkles className="w-3.5 h-3.5" />
                   <span>View Pro Plans</span>
                 </button>
               </div>
