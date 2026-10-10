@@ -95,7 +95,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
   // Top Dock Navigation Items (Configured with Optics product capabilities & routes)
   const dockItems: DockItemData[] = [
     {
-      icon: <SlidersHorizontal className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <SlidersHorizontal className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Simulation',
       active: activeSection === 'simulation',
       onClick: () => {
@@ -107,7 +107,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
       },
     },
     {
-      icon: <Layers className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <Layers className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Capabilities',
       active: activeSection === 'features',
       onClick: () => {
@@ -119,7 +119,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
       },
     },
     {
-      icon: <GitPullRequest className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <GitPullRequest className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Comparison',
       active: activeSection === 'solutions',
       onClick: () => {
@@ -131,7 +131,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
       },
     },
     {
-      icon: <Code2 className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <Code2 className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Toolchain',
       active: activeSection === 'toolchain',
       onClick: () => {
@@ -143,7 +143,7 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
       },
     },
     {
-      icon: <TrendingUp className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <TrendingUp className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Velocity',
       active: activeSection === 'analytics',
       onClick: () => {
@@ -156,21 +156,21 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
     },
     { separator: true },
     {
-      icon: <ShieldCheck className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <ShieldCheck className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Security',
       onClick: () => {
         window.location.href = '/security';
       },
     },
     {
-      icon: <HelpCircle className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <HelpCircle className="w-5 h-5" strokeWidth={1.8} />,
       label: 'Support',
       onClick: () => {
         window.location.href = '/support';
       },
     },
     {
-      icon: <MessageSquare className="w-4 h-4" strokeWidth={1.8} />,
+      icon: <MessageSquare className="w-5 h-5" strokeWidth={1.8} />,
       label: 'FAQ',
       active: activeSection === 'faq',
       onClick: () => {
@@ -286,11 +286,11 @@ export function LandingView({ onOpenAuth, isAuthenticated, onGoToApp }: LandingV
           items={dockItems}
           position="top"
           theme="light"
-          baseItemSize={38}
-          magnification={52}
-          panelHeight={50}
-          gap={6}
-          roundness={0.6}
+          baseItemSize={48}
+          magnification={58}
+          panelHeight={60}
+          gap={8}
+          roundness={0.5}
           bounce={true}
           showLabels={true}
         />

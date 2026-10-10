@@ -6,8 +6,8 @@
   justify-content: center;
   gap: var(--dock-gap, 8px);
   box-sizing: border-box;
-  padding: 6px 10px;
-  height: var(--dock-thickness, 54px);
+  padding: 8px 12px;
+  height: var(--dock-thickness, 62px);
   border-radius: 9999px;
   background: var(--dock-panel);
   border: 1px solid var(--dock-panel-edge);
@@ -26,8 +26,8 @@
 .dock-item {
   position: relative;
   flex: none;
-  width: var(--dock-base, 42px);
-  height: var(--dock-base, 42px);
+  width: var(--dock-base, 48px);
+  height: var(--dock-base, 48px);
   margin: 0;
   padding: 0;
   border: 0;
@@ -54,8 +54,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: var(--dock-base, 42px);
-  height: var(--dock-base, 42px);
+  width: var(--dock-base, 48px);
+  height: var(--dock-base, 48px);
   transform-origin: center top;
   pointer-events: none;
 }
@@ -67,7 +67,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 14px;
   background: var(--dock-tile);
   border: 1px solid var(--dock-tile-edge);
   box-shadow: var(--dock-tile-shadow);
@@ -77,8 +77,8 @@
 }
 
 .dock-item:hover .dock-face {
-  background: rgba(235, 230, 222, 0.95);
-  border-color: #d6cfc3;
+  background: rgba(230, 225, 216, 0.98);
+  border-color: #cfc7ba;
 }
 
 .dock--bare .dock-face {
